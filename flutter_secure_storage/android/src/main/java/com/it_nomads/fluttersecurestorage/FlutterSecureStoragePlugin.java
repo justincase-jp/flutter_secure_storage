@@ -125,7 +125,7 @@ public class FlutterSecureStoragePlugin implements MethodCallHandler, FlutterPlu
     private SharedPreferences initializeEncryptedSharedPreferencesManager(Context context) throws GeneralSecurityException, IOException {
         return EncryptedSharedPreferences.create(
                 context.getPackageName() + "_preferences",
-                "_androidx_security_master_key_",
+                MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
                 context,
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
