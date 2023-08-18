@@ -12,7 +12,6 @@ enum StorageCipherAlgorithm {
 
 class AndroidOptions extends Options {
   const AndroidOptions({
-    bool encryptedSharedPreferences = false,
     bool resetOnError = false,
     KeyCipherAlgorithm keyCipherAlgorithm =
         KeyCipherAlgorithm.RSA_ECB_PKCS1Padding,
@@ -20,13 +19,9 @@ class AndroidOptions extends Options {
         StorageCipherAlgorithm.AES_CBC_PKCS7Padding,
     this.sharedPreferencesName,
     this.preferencesKeyPrefix,
-  })  : _encryptedSharedPreferences = encryptedSharedPreferences,
-        _resetOnError = resetOnError,
+  })  : _resetOnError = resetOnError,
         _keyCipherAlgorithm = keyCipherAlgorithm,
         _storageCipherAlgorithm = storageCipherAlgorithm;
-
-  /// EncryptedSharedPrefences are only available on API 23 and greater
-  final bool _encryptedSharedPreferences;
 
   /// When an error is detected, automatically reset all data. This will prevent
   /// fatal errors regarding an unknown key however keep in mind that it will
@@ -67,7 +62,6 @@ class AndroidOptions extends Options {
 
   @override
   Map<String, String> toMap() => <String, String>{
-        'encryptedSharedPreferences': '$_encryptedSharedPreferences',
         'resetOnError': '$_resetOnError',
         'keyCipherAlgorithm': describeEnum(_keyCipherAlgorithm),
         'storageCipherAlgorithm': describeEnum(_storageCipherAlgorithm),
@@ -76,7 +70,6 @@ class AndroidOptions extends Options {
       };
 
   AndroidOptions copyWith({
-    bool? encryptedSharedPreferences,
     bool? resetOnError,
     KeyCipherAlgorithm? keyCipherAlgorithm,
     StorageCipherAlgorithm? storageCipherAlgorithm,
@@ -84,8 +77,6 @@ class AndroidOptions extends Options {
     String? sharedPreferencesName,
   }) =>
       AndroidOptions(
-        encryptedSharedPreferences:
-            encryptedSharedPreferences ?? _encryptedSharedPreferences,
         resetOnError: resetOnError ?? _resetOnError,
         keyCipherAlgorithm: keyCipherAlgorithm ?? _keyCipherAlgorithm,
         storageCipherAlgorithm:

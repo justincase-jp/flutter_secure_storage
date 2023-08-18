@@ -76,17 +76,13 @@ public class FlutterSecureStoragePlugin implements MethodCallHandler, FlutterPlu
     @SuppressWarnings("unchecked")
     private String getKeyFromCall(MethodCall call) {
         Map<String, Object> arguments = (Map<String, Object>) call.arguments;
-        return addPrefixToKey((String) arguments.get("key"));
+        return (String) arguments.get("key");
     }
 
     @SuppressWarnings("unchecked")
     private String getValueFromCall(MethodCall call) {
         Map<String, Object> arguments = (Map<String, Object>) call.arguments;
         return (String) arguments.get("value");
-    }
-
-    private String addPrefixToKey(String key) {
-        return secureStorage.ELEMENT_PREFERENCES_KEY_PREFIX + "_" + key;
     }
 
     /**

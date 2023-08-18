@@ -38,11 +38,12 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 18
+        minSdkVersion 23
+        consumerProguardFiles "consumer-rules.pro"
     }
     
 }
 
 dependencies {
-    implementation "androidx.security:security-crypto:1.1.0-alpha06"
+    implementation "androidx.security:security-crypto:1.0.0-rc02"
 }

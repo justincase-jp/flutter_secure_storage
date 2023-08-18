@@ -73,11 +73,7 @@ class ItemsWidgetState extends State<ItemsWidget> {
         accountName: _getAccountName(),
       );
 
-  AndroidOptions _getAndroidOptions() => const AndroidOptions(
-        encryptedSharedPreferences: true,
-        // sharedPreferencesName: 'Test2',
-        // preferencesKeyPrefix: 'Test'
-      );
+  AndroidOptions _getAndroidOptions() => const AndroidOptions();
 
   String? _getAccountName() =>
       _accountNameController.text.isEmpty ? null : _accountNameController.text;
