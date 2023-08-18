@@ -4,14 +4,16 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/test/test_flutter_secure_storage_platform.dart';
 import 'package:flutter_secure_storage_platform_interface/flutter_secure_storage_platform_interface.dart';
 
-part './options/web_options.dart';
-part './options/ios_options.dart';
 part './options/android_options.dart';
+part './options/apple_options.dart';
+part './options/ios_options.dart';
 part './options/linux_options.dart';
-part './options/windows_options.dart';
 part './options/macos_options.dart';
+part './options/web_options.dart';
+part './options/windows_options.dart';
 
 class FlutterSecureStorage {
   final IOSOptions iOptions;
@@ -31,7 +33,8 @@ class FlutterSecureStorage {
   });
 
   static const UNSUPPORTED_PLATFORM = 'unsupported_platform';
-  static final _platform = FlutterSecureStoragePlatform.instance;
+  FlutterSecureStoragePlatform get _platform =>
+      FlutterSecureStoragePlatform.instance;
 
   /// Encrypts and saves the [key] with the given [value].
   ///
@@ -60,13 +63,25 @@ class FlutterSecureStorage {
           ? _platform.delete(
               key: key,
               options: _selectOptions(
-                  iOptions, aOptions, lOptions, webOptions, mOptions, wOptions),
+                iOptions,
+                aOptions,
+                lOptions,
+                webOptions,
+                mOptions,
+                wOptions,
+              ),
             )
           : _platform.write(
               key: key,
               value: value,
               options: _selectOptions(
-                  iOptions, aOptions, lOptions, webOptions, mOptions, wOptions),
+                iOptions,
+                aOptions,
+                lOptions,
+                webOptions,
+                mOptions,
+                wOptions,
+              ),
             );
 
   /// Decrypts and returns the value for the given [key] or null if [key] is not in the storage.
@@ -91,7 +106,13 @@ class FlutterSecureStorage {
       _platform.read(
         key: key,
         options: _selectOptions(
-            iOptions, aOptions, lOptions, webOptions, mOptions, wOptions),
+          iOptions,
+          aOptions,
+          lOptions,
+          webOptions,
+          mOptions,
+          wOptions,
+        ),
       );
 
   /// Returns true if the storage contains the given [key].
@@ -116,7 +137,13 @@ class FlutterSecureStorage {
       _platform.containsKey(
         key: key,
         options: _selectOptions(
-            iOptions, aOptions, lOptions, webOptions, mOptions, wOptions),
+          iOptions,
+          aOptions,
+          lOptions,
+          webOptions,
+          mOptions,
+          wOptions,
+        ),
       );
 
   /// Deletes associated value for the given [key].
@@ -143,7 +170,13 @@ class FlutterSecureStorage {
       _platform.delete(
         key: key,
         options: _selectOptions(
-            iOptions, aOptions, lOptions, webOptions, mOptions, wOptions),
+          iOptions,
+          aOptions,
+          lOptions,
+          webOptions,
+          mOptions,
+          wOptions,
+        ),
       );
 
   /// Decrypts and returns all keys with associated values.
@@ -165,7 +198,13 @@ class FlutterSecureStorage {
   }) =>
       _platform.readAll(
         options: _selectOptions(
-            iOptions, aOptions, lOptions, webOptions, mOptions, wOptions),
+          iOptions,
+          aOptions,
+          lOptions,
+          webOptions,
+          mOptions,
+          wOptions,
+        ),
       );
 
   /// Deletes all keys with associated values.
@@ -187,7 +226,13 @@ class FlutterSecureStorage {
   }) =>
       _platform.deleteAll(
         options: _selectOptions(
-            iOptions, aOptions, lOptions, webOptions, mOptions, wOptions),
+          iOptions,
+          aOptions,
+          lOptions,
+          webOptions,
+          mOptions,
+          wOptions,
+        ),
       );
 
   /// Select correct options based on current platform
@@ -214,5 +259,12 @@ class FlutterSecureStorage {
     } else {
       throw UnsupportedError(UNSUPPORTED_PLATFORM);
     }
+  }
+
+  /// Initializes the shared preferences with mock values for testing.
+  @visibleForTesting
+  static void setMockInitialValues(Map<String, String> values) {
+    FlutterSecureStoragePlatform.instance =
+        TestFlutterSecureStoragePlatform(values);
   }
 }

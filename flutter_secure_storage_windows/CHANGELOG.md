@@ -1,3 +1,9 @@
+## 2.0.0
+Write encrypted data to files instead of the windows credential system.
+
+## 1.1.3
+Updated flutter_secure_storage_platform_interface to latest version.
+
 ## 1.1.2
 - Silently ignore errors when deleting keys that don't exist
 

@@ -8,11 +8,11 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.1'
+        classpath 'com.android.tools.build:gradle:7.4.1'
     }
 }
 
-rootProject.allprojects {
+allprojects {
     repositories {
         google()
         mavenCentral()
@@ -22,7 +22,15 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 31
+    if (project.android.hasProperty("namespace")) {
+        namespace("com.it_nomads.fluttersecurestorage")
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    compileSdkVersion 33
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -30,17 +38,11 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 23
-        targetSdkVersion 31
-        versionCode 6
-        versionName "3.3.1"
-        consumerProguardFiles "consumer-rules.pro"
+        minSdkVersion 18
     }
-    lintOptions {
-        disable 'InvalidPackage'
-    }
+    
 }
 
 dependencies {
-    implementation "androidx.security:security-crypto:1.0.0-rc02"
+    implementation "androidx.security:security-crypto:1.1.0-alpha06"
 }

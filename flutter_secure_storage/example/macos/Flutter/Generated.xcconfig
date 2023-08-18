@@ -1,6 +1,6 @@
 // This is a generated file; do not edit or check into version control.
 FLUTTER_ROOT=/usr/local/Caskroom/flutter/2.8.1/flutter
-FLUTTER_APPLICATION_PATH=/Users/juliansteenbakker/Documents/github/flutter_secure_storage/flutter_secure_storage/example
+FLUTTER_APPLICATION_PATH=/Users/julian/Documents/github/flutter_secure_storage/flutter_secure_storage/example
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_TARGET=lib/main.dart
 FLUTTER_BUILD_DIR=build
