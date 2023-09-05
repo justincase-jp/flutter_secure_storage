@@ -161,6 +161,7 @@ public class FlutterSecureStorage {
             try {
                 preferences = initializeEncryptedSharedPreferencesManager(applicationContext);
                 checkAndMigrateToEncrypted(nonEncryptedPreferences, preferences);
+                legacyMigrate(preferences);
             } catch (Exception e) {
                 Log.e(TAG, "EncryptedSharedPreferences initialization failed", e);
                 preferences = nonEncryptedPreferences;
@@ -222,6 +223,23 @@ public class FlutterSecureStorage {
             final SharedPreferences.Editor sourceEditor = source.edit();
             storageCipherFactory.removeCurrentAlgorithms(sourceEditor);
             sourceEditor.apply();
+        } catch (Exception e) {
+            Log.e(TAG, "Data migration failed", e);
+        }
+    }
+
+    private void legacyMigrate(SharedPreferences source) {
+        try {
+            final SharedPreferences.Editor editor = source.edit();
+            Map<String, String> raw = (Map<String, String>) source.getAll();
+            for (Map.Entry<String, String> entry : raw.entrySet()) {
+                String key = entry.getKey();
+                if (!key.contains(ELEMENT_PREFERENCES_KEY_PREFIX)) {
+                    editor.putString(ELEMENT_PREFERENCES_KEY_PREFIX + '_' + key, entry.getValue());
+                    editor.remove(key);
+                }
+            }
+            editor.apply();
         } catch (Exception e) {
             Log.e(TAG, "Data migration failed", e);
         }
