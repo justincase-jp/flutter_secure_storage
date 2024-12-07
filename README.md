@@ -1,26 +1,17 @@
 # flutter_secure_storage
-
-### Breaking change for v5.1.0
-IOSAccessibility has been renamed to KeychainAccessibility. This however hasn't been properly documented in the changelog.
-
-### Important notice for Android and v5.0.0
-When upgrading from 4.2.1 to 5.0.0 you can migrate to EncryptedSharedPreferences by
-setting the encryptedSharedPreference parameter to true as explained below. This will automatically
-migrate all preferences. This however can't be undone. If you try to disable encryptedSharedPreference
-after this, you won't be able to read the values. You can only read those with encryptedSharedPreference
-enabled.
-
-### Important notice for Web
-flutter_secure_storage only works on HTTPS or localhost environments. [Please see this issue for more information.](https://github.com/mogol/flutter_secure_storage/issues/320#issuecomment-976308930)
-
+[![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
+[![pub package](https://img.shields.io/pub/v/flutter_secure_storage.svg)](https://pub.dev/packages/flutter_secure_storage)
+[![flutter_secure_storage](https://github.com/mogol/flutter_secure_storage/actions/workflows/flutter.yml/badge.svg)](https://github.com/mogol/flutter_secure_storage/actions/workflows/flutter.yml)
+[![flutter_secure_storage](https://github.com/mogol/flutter_secure_storage/actions/workflows/flutter_drive.yml/badge.svg)](https://github.com/mogol/flutter_secure_storage/actions/workflows/flutter_drive.yml)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/juliansteenbakker)](https://github.com/sponsors/juliansteenbakker)
 
 A Flutter plugin to store data in secure storage:
 
 - [Keychain](https://developer.apple.com/library/content/documentation/Security/Conceptual/keychainServConcepts/01introduction/introduction.html#//apple_ref/doc/uid/TP30000897-CH203-TP1) is used for iOS
-- AES encryption is used for Android. AES secret key is encrypted with RSA and RSA key is stored in [KeyStore](https://developer.android.com/training/articles/keystore.html).   
-  By default following algorithms are used for AES and secret key encryption: AES/CBC/PKCS7Padding and RSA/ECB/PKCS1Padding  
-  From Android 6 you can use newer, recommended algoritms:  
-  AES/GCM/NoPadding and RSA/ECB/OAEPWithSHA-256AndMGF1Padding  
+- AES encryption is used for Android. AES secret key is encrypted with RSA and RSA key is stored in [KeyStore](https://developer.android.com/training/articles/keystore.html).
+  By default following algorithms are used for AES and secret key encryption: AES/CBC/PKCS7Padding and RSA/ECB/PKCS1Padding
+  From Android 6 you can use newer, recommended algoritms:
+  AES/GCM/NoPadding and RSA/ECB/OAEPWithSHA-256AndMGF1Padding
   You can set them in Android options like so:
 ```dart
   AndroidOptions _getAndroidOptions() => const AndroidOptions(
@@ -30,7 +21,7 @@ A Flutter plugin to store data in secure storage:
 ```
 On devices running Android with version less than 6, plugin will fall back to default implementation. You can change the algorithm, even if you already have some encrypted preferences - they will be re-encrypted using selected algorithms.
 Choosing algorithm is irrelevant if you are using EncryptedSharedPreferences as described below.
-- With v5.0.0 we can use [EncryptedSharedPreferences](https://developer.android.com/topic/security/data) on Android by enabling it in the Android Options like so:
+- With v5.0.0 we can use [EncryptedSharedPreferences](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences) on Android by enabling it in the Android Options like so:
 ```dart
   AndroidOptions _getAndroidOptions() => const AndroidOptions(
   encryptedSharedPreferences: true,
@@ -40,18 +31,28 @@ For more information see the example app.
 - [`libsecret`](https://wiki.gnome.org/Projects/Libsecret) is used for Linux.
 
 _Note_ KeyStore was introduced in Android 4.3 (API level 18). The plugin wouldn't work for earlier versions.
+## Important notice for Web
+flutter_secure_storage only works on HTTPS or localhost environments. [Please see this issue for more information.](https://github.com/mogol/flutter_secure_storage/issues/320#issuecomment-976308930)
+
+### WASM support
+You can opt-in into the new WASM compatible version of flutter_secure_storage_web by adding the following override in your pubspec.yaml:
+
+```yaml
+dependency_overrides:
+  flutter_secure_storage_web: ^2.0.0-beta.1
+```
 
 ## Platform Implementation
 Please note that this table represents the functions implemented in this repository and it is possible that changes haven't yet been released on pub.dev
 
-|         | read               | write              | delete             | containsKey        | readAll            | deleteAll          |
-|---------|--------------------|--------------------|--------------------|--------------------|--------------------|--------------------|
-| Android | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| iOS     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Windows | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Linux   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| macOS   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| Web     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+|         | read               | write              | delete             | containsKey        | readAll            | deleteAll          | isCupertinoProtectedDataAvailable | onCupertinoProtectedDataAvailabilityChanged |
+|---------|--------------------|--------------------|--------------------|--------------------|--------------------|--------------------|-----------------------------------|---------------------------------------------|
+| Android | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |                                   |
+| iOS     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark:                | :white_check_mark:                          |
+| Windows | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |                                   |
+| Linux   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |                                   |
+| macOS   | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark:                | :white_check_mark: (on macOS 12 and newer)  |
+| Web     | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |                                   |
 
 ## Getting Started
 
@@ -61,7 +62,7 @@ If not present already, please call WidgetsFlutterBinding.ensureInitialized() in
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // Create storage
-final storage = new FlutterSecureStorage();
+final storage = FlutterSecureStorage();
 
 // Read value
 String value = await storage.read(key: key);
@@ -122,6 +123,22 @@ Please see:
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
 - https://www.netsparker.com/blog/web-security/http-security-headers/
 
+#### application-specific key option
+
+On the web, all keys are stored in LocalStorage. flutter_secure_storage has an option for the web to wrap this stored key with an application-specific key to make it more difficult to analyze.
+
+```dart
+final _storage = const FlutterSecureStorage(
+  webOptions: WebOptions(
+    wrapKey: '${your_application_specific_key}',
+    wrapKeyIv: '${your_application_specific_iv}',
+  ),
+);
+```
+
+This option encrypts the key stored in LocalStorage with [WebCrypto wrapKey](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/wrapKey). It is decrypted with [WebCrypto unwrapKey](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/unwrapKey) when used.
+Generating and managing application-specific keys requires careful attention from developers. See (https://github.com/mogol/flutter_secure_storage/issues/726) for more information.
+
 ### Configure Linux Version
 
 You need `libsecret-1-dev` and `libjsoncpp-dev` on your machine to build the project, and `libsecret-1-0` and `libjsoncpp1` to run the application (add it as a dependency after packaging your app). If you using snapcraft to build the project use the following
@@ -173,3 +190,12 @@ Run the following command from `example` directory
 ```
 flutter drive --target=test_driver/app.dart
 ```
+
+## Contributing
+
+If you want to contribute, you need to initialise the workspace after cloning the repo with `melos` like this:
+```
+flutter pub get
+melos bootstrap
+```
+After that, everything should be set up and working!
