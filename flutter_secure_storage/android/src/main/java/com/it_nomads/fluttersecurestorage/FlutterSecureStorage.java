@@ -239,11 +239,11 @@ public class FlutterSecureStorage {
     private void legacyMigrate(SharedPreferences source) {
         try {
             final SharedPreferences.Editor editor = source.edit();
-            Map<String, String> raw = (Map<String, String>) source.getAll();
-            for (Map.Entry<String, String> entry : raw.entrySet()) {
+            for (Map.Entry<String, ?> entry : source.getAll().entrySet()) {
+                Object v = entry.getValue();
                 String key = entry.getKey();
-                if (!key.contains(ELEMENT_PREFERENCES_KEY_PREFIX)) {
-                    editor.putString(ELEMENT_PREFERENCES_KEY_PREFIX + '_' + key, entry.getValue());
+                if (v instanceof String && !key.contains(ELEMENT_PREFERENCES_KEY_PREFIX)) {
+                    editor.putString(ELEMENT_PREFERENCES_KEY_PREFIX + '_' + key, (String) v);
                     editor.remove(key);
                 }
             }
