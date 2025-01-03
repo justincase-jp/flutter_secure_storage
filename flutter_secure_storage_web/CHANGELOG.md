@@ -1,3 +1,6 @@
+## 2.0.0-beta.2
+Update web dependency support to support <2.0.0 instead of <1.0.0.
+
 ## 2.0.0-beta.1
 - Migrate away from `html` to `web`
 - Remove `js` in favor of using js-interop

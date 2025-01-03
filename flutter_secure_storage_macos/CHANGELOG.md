@@ -1,3 +1,6 @@
+## 3.1.3
+Added useDataProtectionKeyChain parameter.
+
 ## 3.1.2
 Fixed an issue which caused the readAll and deleteAll to not work properly.
 

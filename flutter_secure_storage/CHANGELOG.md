@@ -1,5 +1,9 @@
 ## 9.2.3
 * [iOS] Fix for issue #711: The specified item already exists in the keychain.
+* [Linux] Fix json.dump with indentations.
+* [Web] Update web dependency support to support <2.0.0 instead of <1.0.0.
+* [Web] Add wrapKey and wrapKeyIv parameters to webOptions. See readme for more information.
+* [macOS] Added useDataProtectionKeyChain parameter.
 
 ## 9.2.2
 [iOS, macOS] Fixed an issue which caused the readAll and deleteAll to not work properly.
