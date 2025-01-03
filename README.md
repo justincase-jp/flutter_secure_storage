@@ -39,7 +39,7 @@ You can opt-in into the new WASM compatible version of flutter_secure_storage_we
 
 ```yaml
 dependency_overrides:
-  flutter_secure_storage_web: ^2.0.0-beta.1
+  flutter_secure_storage_web: ^2.0.0-beta.2
 ```
 
 ## Platform Implementation
