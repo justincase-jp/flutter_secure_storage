@@ -28,6 +28,7 @@ import com.google.crypto.tink.DeterministicAead;
 import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.KeyTemplates;
 import com.google.crypto.tink.KeysetHandle;
+import com.google.crypto.tink.RegistryConfiguration;
 import com.google.crypto.tink.aead.AeadConfig;
 import com.google.crypto.tink.daead.DeterministicAeadConfig;
 import com.google.crypto.tink.integration.android.AndroidKeysetManager;
@@ -160,8 +161,8 @@ public final class EncryptedSharedPreferences implements SharedPreferences {
                 .withSharedPref(applicationContext, VALUE_KEYSET_ALIAS, fileName)
                 .withMasterKeyUri(KEYSTORE_PATH_URI + masterKeyAlias)
                 .build().getKeysetHandle();
-        DeterministicAead daead = daeadKeysetHandle.getPrimitive(DeterministicAead.class);
-        Aead aead = aeadKeysetHandle.getPrimitive(Aead.class);
+        DeterministicAead daead = daeadKeysetHandle.getPrimitive(RegistryConfiguration.get(), DeterministicAead.class);
+        Aead aead = aeadKeysetHandle.getPrimitive(RegistryConfiguration.get(), Aead.class);
         return new EncryptedSharedPreferences(fileName, masterKeyAlias,
                 applicationContext.getSharedPreferences(fileName, Context.MODE_PRIVATE), aead,
                 daead);
