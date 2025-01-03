@@ -1,3 +1,6 @@
+## 1.2.2
+- Fix json.dump with indentations 
+
 ## 1.2.1
 - Fixed search with schemas fails in cold keyrings
 - Fixed erase called on null
