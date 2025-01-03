@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_secure_storage_macos'
-  s.version          = '6.1.1'
+  s.version          = '6.1.3'
   s.summary          = 'Flutter Secure Storage'
   s.description      = <<-DESC
 Flutter Secure Storage Plugin for MacOs
