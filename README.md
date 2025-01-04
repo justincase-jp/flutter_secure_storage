@@ -219,7 +219,13 @@ We welcome contributions to this project! To set up your workspace after cloning
 1. Fetch the Flutter dependencies:
    `flutter pub get`
 
-2. Bootstrap the workspace with `melos`:
+2. Activate `melos`:
+   `dart pub global activate melos`
+
+3. (Optional) Add pub executables to your path:
+   `export PATH="$PATH":"$HOME/.pub-cache/bin"`
+
+4. Bootstrap the workspace with `melos`:
    `melos bootstrap`
 
 This will prepare the project for development by linking and configuring all required dependencies.
