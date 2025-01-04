@@ -4,8 +4,8 @@ library flutter_secure_storage_web;
 import 'dart:convert';
 import 'dart:js_interop' as js_interop;
 import 'dart:js_interop_unsafe' as js_interop;
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage_platform_interface/flutter_secure_storage_platform_interface.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:web/web.dart' as web;
@@ -63,10 +63,9 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
     }
   }
 
-  /// Encrypts and saves the [key] with the given [value].
+  /// Reads and decrypts the value for the given [key].
   ///
-  /// If the key was already in the storage, its associated value is changed.
-  /// If the value is null, deletes associated value for the given [key].
+  /// Returns null if the key does not exist or if decryption fails.
   @override
   Future<String?> read({
     required String key,
@@ -231,40 +230,40 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
     String? cypherText,
     Map<String, String> options,
   ) async {
-    if (cypherText == null) {
-      return null;
+    if (cypherText != null) {
+      try {
+        final parts = cypherText.split(".");
+
+        final iv = base64Decode(parts[0]);
+        final algorithm = _getAlgorithm(iv);
+
+        final decryptionKey = await _getEncryptionKey(algorithm, options);
+
+        final value = base64Decode(parts[1]);
+
+        final decryptedContent = await web.window.crypto.subtle
+            .decrypt(
+              _getAlgorithm(iv),
+              decryptionKey,
+              Uint8List.fromList(value).toJS,
+            )
+            .toDart;
+
+        final plainText = utf8.decode(
+          (decryptedContent! as js_interop.JSArrayBuffer).toDart.asUint8List(),
+        );
+
+        return plainText;
+      } catch (e, s) {
+        if (kDebugMode) {
+          print(e);
+          debugPrintStack(stackTrace: s);
+        }
+      }
     }
 
-    final parts = cypherText.split(".");
-
-    final iv = base64Decode(parts[0]);
-    final algorithm = _getAlgorithm(iv);
-
-    final decryptionKey = await _getEncryptionKey(algorithm, options);
-
-    final value = base64Decode(parts[1]);
-
-    final decryptedContent = await web.window.crypto.subtle
-        .decrypt(
-          _getAlgorithm(iv),
-          decryptionKey,
-          Uint8List.fromList(value).toJS,
-        )
-        .toDart;
-
-    final plainText = utf8.decode(
-      (decryptedContent! as js_interop.JSArrayBuffer).toDart.asUint8List(),
-    );
-
-    return plainText;
+    return null;
   }
-
-// @override
-// Future<bool> isCupertinoProtectedDataAvailable() => Future.value(false);
-//
-// @override
-// Stream<bool> get onCupertinoProtectedDataAvailabilityChanged =>
-//     Stream.empty();
 }
 
 extension on List<String> {
