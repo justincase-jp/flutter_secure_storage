@@ -19,6 +19,13 @@ A Flutter plugin to securely store sensitive data in a key-value pair format usi
 
 ---
 
+## Important notice for Android
+Beginning with version 10, all data will be transitioned to encryptedSharedPreferences. As a result, the useEncryptedSharedPreferences option will be deprecated.
+
+In version 11, the migration tool will no longer be available. To ensure users retain their data, it is essential to first upgrade to version 10 before proceeding to version 11.
+
+Due to this update, the minimum required Android SDK will be 23.
+
 ## Important notice for Web
 flutter_secure_storage only works on HTTPS or localhost environments. [Please see this issue for more information.](https://github.com/mogol/flutter_secure_storage/issues/320#issuecomment-976308930)
 
