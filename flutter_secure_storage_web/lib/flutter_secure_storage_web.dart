@@ -63,10 +63,9 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
     }
   }
 
-  /// Encrypts and saves the [key] with the given [value].
+  /// Reads and decrypts the value for the given [key].
   ///
-  /// If the key was already in the storage, its associated value is changed.
-  /// If the value is null, deletes associated value for the given [key].
+  /// Returns null if the key does not exist or if decryption fails.
   @override
   Future<String?> read({
     required String key,
