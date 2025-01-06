@@ -29,14 +29,6 @@ Due to this update, the minimum required Android SDK will be 23.
 ## Important notice for Web
 flutter_secure_storage only works on HTTPS or localhost environments. [Please see this issue for more information.](https://github.com/mogol/flutter_secure_storage/issues/320#issuecomment-976308930)
 
-### WASM support
-You can opt-in into the new WASM compatible version of flutter_secure_storage_web by adding the following override in your pubspec.yaml:
-
-```yaml
-dependency_overrides:
-  flutter_secure_storage_web: ^2.0.0-beta.2
-```
-
 ---
 
 ## Installation
