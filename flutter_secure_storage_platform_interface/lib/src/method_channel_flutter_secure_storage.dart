@@ -91,7 +91,7 @@ class MethodChannelFlutterSecureStorage extends FlutterSecureStoragePlatform {
   Future<Map<String, String>> readAll({
     required Map<String, String> options,
   }) async {
-    final results = await _channel.invokeMethod<Map<String, String>>(
+    final results = await _channel.invokeMethod<Map<Object?, Object?>>(
       'readAll',
       {
         'options': options,
