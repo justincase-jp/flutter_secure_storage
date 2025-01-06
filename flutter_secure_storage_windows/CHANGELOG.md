@@ -1,5 +1,7 @@
 ## 4.0.0
-Migrates to `win32` version 5.5.4 to support Dart 3.4 / Flutter 3.22.0.
+- This plugin requires a minimum dart sdk of 3.3.0 or higher and a minimum flutter version of 3.19.0.
+- Migrated to new analyzer and clean-up code.
+- Migrates to `win32` version 5.5.4 to support Dart 3.4 / Flutter 3.22.0.
 
 ## 3.1.2
 Reverts onCupertinoProtectedDataAvailabilityChanged and isCupertinoProtectedDataAvailable.
