@@ -1,5 +1,6 @@
-## 1.2.3
-Update documentation
+## 2.0.0
+- This plugin requires a minimum dart sdk of 3.3.0 or higher and a minimum flutter version of 3.19.0.
+- Updated documentation
 
 ## 1.2.2
 - Fix json.dump with indentations 
