@@ -45,7 +45,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.22.x
+          flutter-version: 3.x
       - uses: actions/setup-java@v4
         with:
           distribution: "temurin"
@@ -80,7 +80,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.24.x
+          flutter-version: 3.x
       - name: Install melos
         run: |
           flutter pub global activate melos
