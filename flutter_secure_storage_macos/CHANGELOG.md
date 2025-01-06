@@ -1,5 +1,6 @@
-## 3.1.4
-Update documentation
+## 4.0.0
+- This plugin requires a minimum dart sdk of 3.3.0 or higher and a minimum flutter version of 3.19.0.
+- Updated documentation
 
 ## 3.1.3
 Added useDataProtectionKeyChain parameter.
