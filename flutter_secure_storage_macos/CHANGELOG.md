@@ -1,3 +1,6 @@
+## 3.1.4
+Update documentation
+
 ## 3.1.3
 Added useDataProtectionKeyChain parameter.
 

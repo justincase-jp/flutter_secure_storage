@@ -2,20 +2,14 @@
 
 This is the platform-specific implementation of `flutter_secure_storage` for Android and iOS.
 
----
-
 ## Features
 
 - Secure storage using Keychain (iOS) and Encrypted Shared Preferences with Tink (Android).
 - Platform-specific options for encryption and accessibility.
 
----
-
 ## Installation
 
 Add the dependency in your `pubspec.yaml` and run `flutter pub get`.
-
----
 
 ## Configuration
 
@@ -32,13 +26,9 @@ Add the dependency in your `pubspec.yaml` and run `flutter pub get`.
 1. Set Keychain accessibility options:
     - Modify your `Info.plist` file with the necessary configurations.
 
----
-
 ## Usage
 
 Refer to the main [flutter_secure_storage README](../README.md) for common usage instructions.
-
----
 
 ## License
 

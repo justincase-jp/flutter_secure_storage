@@ -1,3 +1,6 @@
+## 1.2.3
+Update documentation
+
 ## 1.2.2
 - Fix json.dump with indentations 
 

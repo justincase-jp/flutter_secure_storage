@@ -8,16 +8,12 @@
 
 A Flutter plugin to securely store sensitive data in a key-value pair format using platform-specific secure storage solutions. It supports Android, iOS, macOS, Windows, and Linux.
 
----
-
 ## Features
 
 - **Secure Data Storage**: Uses Keychain for iOS, Encrypted Shared Preferences via Tink for Android, and secure mechanisms on other supported platforms.
 - **Encryption**: Encrypts data before storing it in the underlying storage system.
 - **Cross-Platform**: Works seamlessly across multiple platforms.
 - **Customizable Options**: Set accessibility attributes, key expiration, and more.
-
----
 
 ## Important notice for Android
 Beginning with version 10, all data will be transitioned to encryptedSharedPreferences. As a result, the useEncryptedSharedPreferences option will be deprecated.
@@ -28,8 +24,6 @@ Due to this update, the minimum required Android SDK will be 23.
 
 ## Important notice for Web
 flutter_secure_storage only works on HTTPS or localhost environments. [Please see this issue for more information.](https://github.com/mogol/flutter_secure_storage/issues/320#issuecomment-976308930)
-
----
 
 ## Installation
 
@@ -45,8 +39,6 @@ flutter_secure_storage: ^<latest_version>
 Then run:
 
 `flutter pub get`
-
----
 
 ## Usage
 
@@ -78,8 +70,6 @@ Then run:
 ### Check for Key Existence
 
 `bool containsKey = await storage.containsKey(key: 'username');`
-
----
 
 ## Configuration
 
@@ -192,8 +182,6 @@ parts:
 
 Apart from `libsecret` you also need a keyring service, for that you need either `gnome-keyring` (for Gnome users) or `ksecretsservice` (for KDE users) or other light provider like [`secret-service`](https://github.com/yousefvand/secret-service).
 
----
-
 ## Integration Tests
 
 To run the integration tests, navigate to the `example` directory and execute the following command:
@@ -201,8 +189,6 @@ To run the integration tests, navigate to the `example` directory and execute th
 `flutter drive --target=test_driver/app.dart`
 
 This will launch the integration tests specified in the `test_driver` directory.
-
----
 
 ## Contributing
 
@@ -222,13 +208,9 @@ We welcome contributions to this project! To set up your workspace after cloning
 
 This will prepare the project for development by linking and configuring all required dependencies.
 
----
-
 ## API Reference
 
 For a complete list of available methods and configuration options, refer to the [API documentation](https://pub.dev/documentation/flutter_secure_storage/latest/).
-
----
 
 ## License
 

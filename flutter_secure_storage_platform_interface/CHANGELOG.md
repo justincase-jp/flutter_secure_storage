@@ -1,5 +1,5 @@
 ## 1.1.3
-Update documentation 
+Migrated to new analyzer and clean-up code.
 
 ## 1.1.2
 Adds onCupertinoProtectedDataAvailabilityChanged and isCupertinoProtectedDataAvailable via MethodChannelFlutterSecureStorage to prevent breaking changes.
