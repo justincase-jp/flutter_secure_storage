@@ -30,7 +30,9 @@ class MethodChannelFlutterSecureStorage extends FlutterSecureStoragePlatform {
   ///   - `false` if protected data is not available.
   ///   - `null` if the platform does not support this functionality.
   Future<bool?> isCupertinoProtectedDataAvailable() async {
-    if (kIsWeb || !(Platform.isIOS || Platform.isMacOS)) {
+    if (kIsWeb ||
+        !(defaultTargetPlatform == TargetPlatform.iOS ||
+            defaultTargetPlatform == TargetPlatform.macOS)) {
       return null;
     }
     return (await _channel.invokeMethod<bool>('isProtectedDataAvailable')) ??
