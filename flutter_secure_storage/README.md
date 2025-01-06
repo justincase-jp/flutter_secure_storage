@@ -1,4 +1,4 @@
-# flutter_secure_storage_android_ios
+# flutter_secure_storage
 
 This is the platform-specific implementation of `flutter_secure_storage` for Android and iOS.
 
