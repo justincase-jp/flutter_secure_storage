@@ -13,6 +13,7 @@ and a minimum flutter version of 3.19.0.
 - Lots of minor code improvements
 
 [iOS]
+- Change minimum iOS version from 9 to 12
 - Use serial queue for execution of iOS keychain operations
 
 [Web]
