@@ -105,18 +105,9 @@ android:allowBackup="false"
 ...>
 </application>
 
-### iOS
+### macOS & iOS
 
-Set the `Keychain` accessibility options in the `Info.plist` file (if needed):
-
-<key>keychain-access-groups</key>
-<array>
-<string>$(AppIdentifierPrefix)com.example.flutterSecureStorageExample</string>
-</array>
-
-### macOS
-
-You also need to add Keychain Sharing as capability to your macOS runner. To achieve this, please add the following in *both* your `macos/Runner/DebugProfile.entitlements` *and* `macos/Runner/Release.entitlements` (you need to change both files).
+You also need to add Keychain Sharing as capability to your macOS runner. To achieve this, please add the following in *both* your `macos/Runner/DebugProfile.entitlements` *and* `macos/Runner/Release.entitlements` for macOS or for iOS `ios/Runner/DebugProfile.entitlements` *and* `ios/Runner/Release.entitlements`.
 
 ```
 <key>keychain-access-groups</key>
