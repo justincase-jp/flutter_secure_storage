@@ -1,5 +1,6 @@
 ## 2.0.0
 Stable release containing all changes from beta releases, which are:
+- This plugin requires a minimum dart sdk of 3.3.0 or higher and a minimum flutter version of 3.19.0.
 - Migrate away from `html` to `web`
 - Remove `js` in favor of using js-interop
 - Update web dependency support to support <2.0.0 instead of <1.0.0.
