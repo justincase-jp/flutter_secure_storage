@@ -23,8 +23,23 @@ Add the dependency in your `pubspec.yaml` and run `flutter pub get`.
 
 ### iOS
 
-1. Set Keychain accessibility options:
-    - Modify your `Info.plist` file with the necessary configurations.
+You also need to add Keychain Sharing as capability to your iOS runner. To achieve this, please add the following in *both* your `ios/Runner/DebugProfile.entitlements` *and* `ios/Runner/Release.entitlements`.
+
+```
+<key>keychain-access-groups</key>
+<array/>
+```
+
+If you have set your application up to use App Groups then you will need to add the name of the App Group to the `keychain-access-groups` argument above. Failure to do so will result in values appearing to be written successfully but never actually being written at all. For example if your app has an App Group named "aoeu" then your value for above would instead read:
+
+```
+<key>keychain-access-groups</key>
+<array>
+	<string>$(AppIdentifierPrefix)aoeu</string>
+</array>
+```
+
+If you are configuring this value through XCode then the string you set in the Keychain Sharing section would simply read "aoeu" with XCode appending the `$(AppIdentifierPrefix)` when it saves the configuration.
 
 ## Usage
 
