@@ -28,9 +28,9 @@ enum KeychainAccessibility {
   /// Items with this attribute do not migrate to a new device.
   first_unlock_this_device,
 }
+
 /// Specific options for Apple platform.
 abstract class AppleOptions extends Options {
-
   /// Creates an instance of `AppleOptions` with configurable parameters
   /// for keychain access and storage behavior.
   ///
@@ -82,8 +82,7 @@ abstract class AppleOptions extends Options {
 
   @override
   Map<String, String> toMap() => <String, String>{
-        if (_accessibility != null)
-          'accessibility': _accessibility.name,
+        if (_accessibility != null) 'accessibility': _accessibility.name,
         if (_accountName != null) 'accountName': _accountName,
         if (_groupId != null) 'groupId': _groupId,
         'synchronizable': '$_synchronizable',

@@ -21,7 +21,7 @@ class MacOsOptions extends AppleOptions {
     super.accessibility,
     super.synchronizable,
     bool useDataProtectionKeyChain = true,
-  })  : _useDataProtectionKeyChain = useDataProtectionKeyChain;
+  }) : _useDataProtectionKeyChain = useDataProtectionKeyChain;
 
   /// A predefined `MacOsOptions` instance with default settings.
   ///
@@ -58,7 +58,7 @@ class MacOsOptions extends AppleOptions {
         accessibility: accessibility ?? _accessibility,
         synchronizable: synchronizable ?? _synchronizable,
         useDataProtectionKeyChain:
-        useDataProtectionKeyChain ?? _useDataProtectionKeyChain,
+            useDataProtectionKeyChain ?? _useDataProtectionKeyChain,
       );
 
   /// Converts the `MacOsOptions` instance into a map representation,
@@ -72,7 +72,7 @@ class MacOsOptions extends AppleOptions {
   ///   property.
   @override
   Map<String, String> toMap() => <String, String>{
-    ...super.toMap(),
-    'useDataProtectionKeyChain': '$_useDataProtectionKeyChain',
-  };
+        ...super.toMap(),
+        'useDataProtectionKeyChain': '$_useDataProtectionKeyChain',
+      };
 }

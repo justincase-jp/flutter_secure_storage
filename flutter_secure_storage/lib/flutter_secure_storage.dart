@@ -22,10 +22,10 @@ final Map<String, List<ValueChanged<String?>>> _listeners = {};
 class FlutterSecureStorage {
   /// Creates a [FlutterSecureStorage] instance with optional platform-specific
   /// configurations.
-  /// 
+  ///
   /// Each platform-specific configuration allows customization of secure
   /// storage behavior for the corresponding platform.
-  /// 
+  ///
   /// [iOptions] - Options specific to iOS.
   /// [aOptions] - Options specific to Android.
   /// [lOptions] - Options specific to Linux.
@@ -42,32 +42,32 @@ class FlutterSecureStorage {
   });
 
   /// Platform-specific options for iOS.
-  /// 
+  ///
   /// Configures secure storage behavior for iOS devices.
   final IOSOptions iOptions;
 
   /// Platform-specific options for Android.
-  /// 
+  ///
   /// Configures secure storage behavior for Android devices.
   final AndroidOptions aOptions;
 
   /// Platform-specific options for Linux.
-  /// 
+  ///
   /// Configures secure storage behavior for Linux systems.
   final LinuxOptions lOptions;
 
   /// Platform-specific options for Windows.
-  /// 
+  ///
   /// Configures secure storage behavior for Windows systems.
   final WindowsOptions wOptions;
 
   /// Platform-specific options for Web.
-  /// 
+  ///
   /// Configures secure storage behavior for Web applications.
   final WebOptions webOptions;
 
   /// Platform-specific options for macOS.
-  /// 
+  ///
   /// Configures secure storage behavior for macOS devices.
   final MacOsOptions mOptions;
 

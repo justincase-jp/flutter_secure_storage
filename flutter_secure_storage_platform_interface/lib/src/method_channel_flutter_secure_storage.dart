@@ -6,12 +6,29 @@ const MethodChannel _channel =
 const EventChannel _eventChannel =
     EventChannel('plugins.it_nomads.com/flutter_secure_storage/events');
 
+/// The `MethodChannelFlutterSecureStorage` class implements the
+/// `FlutterSecureStoragePlatform` interface using method channels to
+/// communicate with native platform code.
 class MethodChannelFlutterSecureStorage extends FlutterSecureStoragePlatform {
+  /// A stream that emits updates when the availability of Cupertino protected
+  /// data changes. It is only relevant on iOS and macOS platforms.
+  ///
+  /// Returns:
+  /// - A [Stream] of boolean values indicating the availability of protected
+  ///   data.
   Stream<bool> get onCupertinoProtectedDataAvailabilityChanged => _eventChannel
       .receiveBroadcastStream()
       .where((event) => event is bool)
       .map((event) => event as bool);
 
+  /// Checks if Cupertino protected data is currently available on the device.
+  /// It is only supported on iOS and macOS platforms.
+  ///
+  /// Returns:
+  /// - A [Future] resolving to:
+  ///   - `true` if protected data is available.
+  ///   - `false` if protected data is not available.
+  ///   - `null` if the platform does not support this functionality.
   Future<bool?> isCupertinoProtectedDataAvailable() async {
     if (kIsWeb || !(Platform.isIOS || Platform.isMacOS)) {
       return null;
@@ -74,7 +91,7 @@ class MethodChannelFlutterSecureStorage extends FlutterSecureStoragePlatform {
   Future<Map<String, String>> readAll({
     required Map<String, String> options,
   }) async {
-    final results = await _channel.invokeMethod<Map>(
+    final results = await _channel.invokeMethod<Map<String, String>>(
       'readAll',
       {
         'options': options,

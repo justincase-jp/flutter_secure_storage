@@ -154,7 +154,8 @@ void main() {
     test(
       'write - new',
       () => withFfi(() async {
-        // Just checking file was created. Its contents should be tested via "read" test.
+        // Just checking file was created. Its contents should be tested via
+        // "read" test.
 
         final target = createTarget();
         final options = createOptions();
@@ -1013,7 +1014,7 @@ void main() {
       'constructor',
       () async {
         expect(
-          () => stub.FlutterSecureStorageWindows(),
+          stub.FlutterSecureStorageWindows.new,
           throwsAssertionError,
         );
       },

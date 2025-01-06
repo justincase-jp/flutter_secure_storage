@@ -1,3 +1,12 @@
+## 2.0.0
+Stable release containing all changes from beta releases, which are:
+- Migrate away from `html` to `web`
+- Remove `js` in favor of using js-interop
+- Update web dependency support to support <2.0.0 instead of <1.0.0.
+
+Other changes:
+- Migrated from lint to very_good_analysis and clean-up code.
+
 ## 2.0.0-beta.2
 Update web dependency support to support <2.0.0 instead of <1.0.0.
 

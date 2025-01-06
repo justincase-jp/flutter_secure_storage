@@ -1,4 +1,5 @@
 part of '../flutter_secure_storage.dart';
+
 /// The `IOSOptions` class extends `AppleOptions`, providing iOS-specific
 /// options for configuring keychain storage in Flutter.
 class IOSOptions extends AppleOptions {

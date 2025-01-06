@@ -15,7 +15,6 @@ enum _ItemActions { delete, edit, containsKey, read }
 
 /// Homepage of the example app of flutter_secure_storage
 class HomePage extends StatefulWidget {
-
   /// Creates an instance of `HomePage`.
   const HomePage({super.key});
 
@@ -42,8 +41,9 @@ class HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    _accountNameController..removeListener(_readAll)
-    ..dispose();
+    _accountNameController
+      ..removeListener(_readAll)
+      ..dispose();
 
     super.dispose();
   }

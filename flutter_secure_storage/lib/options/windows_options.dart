@@ -2,7 +2,6 @@ part of '../flutter_secure_storage.dart';
 
 /// Specific options for Windows platform.
 class WindowsOptions extends Options {
-
   /// * If `useBackwardCompatibility` is set to true, trying to read from values
   ///   which were written by previous versions. In addition, when reading or
   ///   writing from previous version's storage, read values will be migrated to
