@@ -6,21 +6,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() {
-  runApp(const MaterialApp(home: ItemsWidget()));
+  runApp(const MaterialApp(home: HomePage()));
 }
 
 enum _Actions { deleteAll, isProtectedDataAvailable }
 
 enum _ItemActions { delete, edit, containsKey, read }
 
-class ItemsWidget extends StatefulWidget {
-  const ItemsWidget({super.key});
+/// Homepage of the example app of flutter_secure_storage
+class HomePage extends StatefulWidget {
+  /// Creates an instance of `HomePage`.
+  const HomePage({super.key});
 
   @override
-  ItemsWidgetState createState() => ItemsWidgetState();
+  HomePageState createState() => HomePageState();
 }
 
-class ItemsWidgetState extends State<ItemsWidget> {
+/// The `HomePageState` class represents the mutable state for the `HomePage`
+/// widget. It manages the state and behavior of the user interface.
+class HomePageState extends State<HomePage> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final TextEditingController _accountNameController =
       TextEditingController(text: 'flutter_secure_storage_service');
@@ -37,14 +41,15 @@ class ItemsWidgetState extends State<ItemsWidget> {
 
   @override
   void dispose() {
-    _accountNameController.removeListener(_readAll);
-    _accountNameController.dispose();
+    _accountNameController
+      ..removeListener(_readAll)
+      ..dispose();
 
     super.dispose();
   }
 
   Future<void> _readAll() async {
-    final Map<String, String> all = await _storage.readAll(
+    final all = await _storage.readAll(
       iOptions: _getIOSOptions(),
       aOptions: _getAndroidOptions(),
     );
@@ -52,7 +57,10 @@ class ItemsWidgetState extends State<ItemsWidget> {
       _items
         ..clear()
         ..addAll(all.entries.map((e) => _SecItem(e.key, e.value)))
-        ..sort((a, b) => int.parse(a.key).compareTo(int.parse(b.key)));
+        ..sort(
+          (a, b) =>
+              (int.tryParse(a.key) ?? 10).compareTo(int.tryParse(b.key) ?? 11),
+        );
     });
   }
 
@@ -61,12 +69,12 @@ class ItemsWidgetState extends State<ItemsWidget> {
       iOptions: _getIOSOptions(),
       aOptions: _getAndroidOptions(),
     );
-    _readAll();
+    await _readAll();
   }
 
   Future<void> _isProtectedDataAvailable() async {
-    final ScaffoldMessengerState scaffold = ScaffoldMessenger.of(context);
-    final bool? result = await _storage.isCupertinoProtectedDataAvailable();
+    final scaffold = ScaffoldMessenger.of(context);
+    final result = await _storage.isCupertinoProtectedDataAvailable();
 
     scaffold.showSnackBar(
       SnackBar(
@@ -83,18 +91,14 @@ class ItemsWidgetState extends State<ItemsWidget> {
       iOptions: _getIOSOptions(),
       aOptions: _getAndroidOptions(),
     );
-    _readAll();
+    await _readAll();
   }
 
   IOSOptions _getIOSOptions() => IOSOptions(
         accountName: _getAccountName(),
       );
 
-  AndroidOptions _getAndroidOptions() => const AndroidOptions(
-        encryptedSharedPreferences: true,
-        // sharedPreferencesName: 'Test2',
-        // preferencesKeyPrefix: 'Test'
-      );
+  AndroidOptions _getAndroidOptions() => AndroidOptions.defaultOptions;
 
   String? _getAccountName() =>
       _accountNameController.text.isEmpty ? null : _accountNameController.text;
@@ -213,10 +217,10 @@ class ItemsWidgetState extends State<ItemsWidget> {
           iOptions: _getIOSOptions(),
           aOptions: _getAndroidOptions(),
         );
-        _readAll();
+        await _readAll();
       case _ItemActions.edit:
         if (!context.mounted) return;
-        final String? result = await showDialog<String>(
+        final result = await showDialog<String>(
           context: context,
           builder: (_) => _EditItemWidget(item.value),
         );
@@ -227,11 +231,11 @@ class ItemsWidgetState extends State<ItemsWidget> {
             iOptions: _getIOSOptions(),
             aOptions: _getAndroidOptions(),
           );
-          _readAll();
+          await _readAll();
         }
       case _ItemActions.containsKey:
-        final String key = await _displayTextInputDialog(context, item.key);
-        final bool result = await _storage.containsKey(key: key);
+        final key = await _displayTextInputDialog(context, item.key);
+        final result = await _storage.containsKey(key: key);
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -256,8 +260,8 @@ class ItemsWidgetState extends State<ItemsWidget> {
     BuildContext context,
     String key,
   ) async {
-    final TextEditingController controller = TextEditingController(text: key);
-    await showDialog(
+    final controller = TextEditingController(text: key);
+    await showDialog<dynamic>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: const Text('Check if key exists'),
@@ -274,9 +278,9 @@ class ItemsWidgetState extends State<ItemsWidget> {
   }
 
   String _randomValue() {
-    final Random rand = Random();
-    final List<int> codeUnits =
-        List.generate(20, (_) => rand.nextInt(26) + 65, growable: false);
+    final rand = Random();
+    final codeUnits =
+        List<int>.generate(20, (_) => rand.nextInt(26) + 65, growable: false);
 
     return String.fromCharCodes(codeUnits);
   }

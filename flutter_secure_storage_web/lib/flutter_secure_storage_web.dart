@@ -1,5 +1,5 @@
 /// Web library for flutter_secure_storage
-library flutter_secure_storage_web;
+library;
 
 import 'dart:convert';
 import 'dart:js_interop' as js_interop;
@@ -35,7 +35,7 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
     required Map<String, String> options,
   }) =>
       Future.value(
-        _getStorage(options).has("${options[_publicKey]!}.$key"),
+        _getStorage(options).has('${options[_publicKey]!}.$key'),
       );
 
   /// Deletes associated value for the given [key].
@@ -46,7 +46,7 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
     required String key,
     required Map<String, String> options,
   }) async {
-    _getStorage(options).removeItem("${options[_publicKey]!}.$key");
+    _getStorage(options).removeItem('${options[_publicKey]!}.$key');
   }
 
   /// Deletes all keys with associated values.
@@ -57,8 +57,8 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
     final storage = _getStorage(options);
     final publicKey = options[_publicKey]!;
     final keys = [publicKey];
-    for (int j = 0; j < storage.length; j++) {
-      final key = storage.key(j) ?? "";
+    for (var j = 0; j < storage.length; j++) {
+      final key = storage.key(j) ?? '';
       if (!key.startsWith('$publicKey.')) {
         continue;
       }
@@ -79,7 +79,7 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
     required String key,
     required Map<String, String> options,
   }) async {
-    final value = _getStorage(options)["${options[_publicKey]!}.$key"];
+    final value = _getStorage(options)['${options[_publicKey]!}.$key'];
 
     return _decryptValue(value, options);
   }
@@ -91,9 +91,9 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
   }) async {
     final storage = _getStorage(options);
     final map = <String, String>{};
-    final prefix = "${options[_publicKey]!}.";
-    for (int j = 0; j < storage.length; j++) {
-      final key = storage.key(j) ?? "";
+    final prefix = '${options[_publicKey]!}.';
+    for (var j = 0; j < storage.length; j++) {
+      final key = storage.key(j) ?? '';
       if (!key.startsWith(prefix)) {
         continue;
       }
@@ -131,13 +131,13 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
         final unwrapAlgorithm = _getWrapAlgorithm(options);
         encryptionKey = await web.window.crypto.subtle
             .unwrapKey(
-              "raw",
+              'raw',
               jwk.toJS,
               unwrappingKey,
               unwrapAlgorithm,
               algorithm,
               false,
-              ["encrypt", "decrypt"].toJS,
+              ['encrypt', 'decrypt'].toJS,
             )
             .toDart;
       } else {
@@ -153,7 +153,7 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
       }
     } else {
       encryptionKey = (await web.window.crypto.subtle
-          .generateKey(algorithm, true, ["encrypt", "decrypt"].toJS)
+          .generateKey(algorithm, true, ['encrypt', 'decrypt'].toJS)
           .toDart)! as web.CryptoKey;
 
       final js_interop.JSAny? jsonWebKey;
@@ -162,7 +162,7 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
         final wrapAlgorithm = _getWrapAlgorithm(options);
         jsonWebKey = await web.window.crypto.subtle
             .wrapKey(
-              "raw",
+              'raw',
               encryptionKey,
               wrappingKey,
               wrapAlgorithm,
@@ -170,7 +170,7 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
             .toDart;
       } else {
         jsonWebKey = await web.window.crypto.subtle
-            .exportKey("raw", encryptionKey)
+            .exportKey('raw', encryptionKey)
             .toDart;
       }
 
@@ -185,13 +185,13 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
   Future<web.CryptoKey> _getWrapKey(Map<String, String> options) async {
     final wrapKey = base64Decode(options[_wrapKey]!);
     final algorithm = _getWrapAlgorithm(options);
-    return await web.window.crypto.subtle
+    return web.window.crypto.subtle
         .importKey(
-          "raw",
+          'raw',
           wrapKey.toJS,
           algorithm,
           true,
-          ["wrapKey", "unwrapKey"].toJS,
+          ['wrapKey', 'unwrapKey'].toJS,
         )
         .toDart;
   }
@@ -229,10 +229,10 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
         )
         .toDart)! as js_interop.JSArrayBuffer;
 
-    final encoded =
-        "${base64Encode(iv)}.${base64Encode(encryptedContent.toDart.asUint8List())}";
+    final encoded = '${base64Encode(iv)}.'
+        '${base64Encode(encryptedContent.toDart.asUint8List())}';
 
-    _getStorage(options)["${options[_publicKey]!}.$key"] = encoded;
+    _getStorage(options)['${options[_publicKey]!}.$key'] = encoded;
   }
 
   Future<String?> _decryptValue(
@@ -241,7 +241,7 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
   ) async {
     if (cypherText != null) {
       try {
-        final parts = cypherText.split(".");
+        final parts = cypherText.split('.');
 
         final iv = base64Decode(parts[0]);
         final algorithm = _getAlgorithm(iv);
@@ -263,7 +263,7 @@ class FlutterSecureStorageWeb extends FlutterSecureStoragePlatform {
         );
 
         return plainText;
-      } catch (e, s) {
+      } on Exception catch (e, s) {
         if (kDebugMode) {
           print(e);
           debugPrintStack(stackTrace: s);

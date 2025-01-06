@@ -1,3 +1,36 @@
+## 10.0.0-beta.1
+This new major release has some big changes. This plugin requires a minimum dart sdk of 3.3.0 or higher
+and a minimum flutter version of 3.19.0.
+
+[Android]
+- By default, encryptedSharedPreferences will be enabled, and cannot be disabled. If there is still 
+  data saved by previous versions using encryptedSharedPreferences = false, it will be automatically
+  transferred to encryptedSharedPreferences.
+- Migrated from deprecated Jetpack Crypto library to Google Tink Crypto library.
+- Migrated to Android SDK 35
+- Migrated to Java Version 17
+- Minimum Android SDK is changed from 19 to 23.
+- Migrated to new analyzer and clean-up code.
+- Lots of minor code improvements
+
+[iOS]
+- Change minimum iOS version from 9 to 12
+- Use serial queue for execution of iOS keychain operations
+- Migrated to new analyzer and clean-up code.
+
+[Web]
+- Web is now migrated to be compatible with WASM.
+- The parameter useSessionStorage is added to WebOptions, which you can use to save in session storage
+  instead of local storage.
+- Migrated to new analyzer and clean-up code.
+
+[Windows]
+- Migrates to `win32` version 5.5.4 to support Dart 3.4 / Flutter 3.22.0.
+- Migrated to new analyzer and clean-up code.
+
+[Platform Interface]
+- Migrated to new analyzer and clean-up code.
+
 ## 9.2.3
 * [iOS] Fix for issue #711: The specified item already exists in the keychain.
 * [Linux] Fix json.dump with indentations.

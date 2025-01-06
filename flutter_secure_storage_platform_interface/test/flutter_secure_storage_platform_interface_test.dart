@@ -61,9 +61,7 @@ void main() {
     const options = <String, String>{};
     const key = 'test_key';
 
-    tearDown(() {
-      log.clear();
-    });
+    tearDown(log.clear);
 
     test('read', () async {
       await storage.read(key: key, options: options);

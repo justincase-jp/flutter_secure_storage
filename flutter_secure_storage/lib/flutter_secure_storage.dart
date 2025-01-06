@@ -1,4 +1,4 @@
-library flutter_secure_storage;
+library;
 
 import 'dart:io';
 
@@ -17,14 +17,21 @@ part './options/windows_options.dart';
 
 final Map<String, List<ValueChanged<String?>>> _listeners = {};
 
+/// A class to manage secure storage in a Flutter application across multiple
+/// platforms.
 class FlutterSecureStorage {
-  final IOSOptions iOptions;
-  final AndroidOptions aOptions;
-  final LinuxOptions lOptions;
-  final WindowsOptions wOptions;
-  final WebOptions webOptions;
-  final MacOsOptions mOptions;
-
+  /// Creates a [FlutterSecureStorage] instance with optional platform-specific
+  /// configurations.
+  ///
+  /// Each platform-specific configuration allows customization of secure
+  /// storage behavior for the corresponding platform.
+  ///
+  /// [iOptions] - Options specific to iOS.
+  /// [aOptions] - Options specific to Android.
+  /// [lOptions] - Options specific to Linux.
+  /// [wOptions] - Options specific to Windows.
+  /// [webOptions] - Options specific to Web.
+  /// [mOptions] - Options specific to macOS.
   const FlutterSecureStorage({
     this.iOptions = IOSOptions.defaultOptions,
     this.aOptions = AndroidOptions.defaultOptions,
@@ -34,14 +41,45 @@ class FlutterSecureStorage {
     this.mOptions = MacOsOptions.defaultOptions,
   });
 
-  static const UNSUPPORTED_PLATFORM = 'unsupported_platform';
+  /// Platform-specific options for iOS.
+  ///
+  /// Configures secure storage behavior for iOS devices.
+  final IOSOptions iOptions;
+
+  /// Platform-specific options for Android.
+  ///
+  /// Configures secure storage behavior for Android devices.
+  final AndroidOptions aOptions;
+
+  /// Platform-specific options for Linux.
+  ///
+  /// Configures secure storage behavior for Linux systems.
+  final LinuxOptions lOptions;
+
+  /// Platform-specific options for Windows.
+  ///
+  /// Configures secure storage behavior for Windows systems.
+  final WindowsOptions wOptions;
+
+  /// Platform-specific options for Web.
+  ///
+  /// Configures secure storage behavior for Web applications.
+  final WebOptions webOptions;
+
+  /// Platform-specific options for macOS.
+  ///
+  /// Configures secure storage behavior for macOS devices.
+  final MacOsOptions mOptions;
+
+  static const _unsupportedPlatform = 'unsupported_platform';
 
   FlutterSecureStoragePlatform get _platform =>
       FlutterSecureStoragePlatform.instance;
 
-  ///Register [listener] for [key] with the [value] injected for the listener.
-  ///The [listener] will still be called when you delete the [key] with the injected [value] as null.
-  ///This listener will be added to the list of registered listeners for that [key].
+  /// Register [listener] for [key] with the value injected for the listener.
+  /// The [listener] will still be called when you delete the [key] with the
+  /// injected value as null. This listener will be added to the list of
+  /// registered listeners for that [key].
   void registerListener({
     required String key,
     required ValueChanged<String?> listener,
@@ -49,8 +87,8 @@ class FlutterSecureStorage {
     _listeners[key] = [..._listeners[key] ?? [], listener];
   }
 
-  ///Unregister listener for [Key].
-  ///The other registered listeners for [key] will be remained.
+  /// Unregister listener for [Key].
+  /// The other registered listeners for [key] will be remained.
   void unregisterListener({
     required String key,
     required ValueChanged<String?> listener,
@@ -65,12 +103,12 @@ class FlutterSecureStorage {
     _listeners[key] = listenersForKey;
   }
 
-  ///Unregister all listeners for [key].
+  /// Unregister all listeners for [key].
   void unregisterAllListenersForKey({required String key}) {
     _listeners.remove(key);
   }
 
-  ///Unregister all listeners for all keys.
+  /// Unregister all listeners for all keys.
   void unregisterAllListeners() {
     _listeners.clear();
   }
@@ -128,7 +166,8 @@ class FlutterSecureStorage {
     _callListenersForKey(key, value);
   }
 
-  /// Decrypts and returns the value for the given [key] or null if [key] is not in the storage.
+  /// Decrypts and returns the value for the given [key] or null if [key] is not
+  /// in the storage.
   ///
   /// [key] shouldn't be null.
   /// [iOptions] optional iOS options
@@ -322,7 +361,7 @@ class FlutterSecureStorage {
     } else if (Platform.isMacOS) {
       return mOptions?.params ?? this.mOptions.params;
     } else {
-      throw UnsupportedError(UNSUPPORTED_PLATFORM);
+      throw UnsupportedError(_unsupportedPlatform);
     }
   }
 
@@ -337,8 +376,8 @@ class FlutterSecureStorage {
 
   /// iOS and macOS only feature.
   ///
-  /// On macOS this is only available on macOS 12 or newer. On older versions always returns true.
-  /// On all unsupported platforms returns null
+  /// On macOS this is only available on macOS 12 or newer. On older versions
+  /// always returns true. On all unsupported platforms returns null
   ///
   /// iOS: https://developer.apple.com/documentation/uikit/uiapplication/1622925-isprotecteddataavailable
   /// macOS: https://developer.apple.com/documentation/appkit/nsapplication/3752992-isprotecteddataavailable

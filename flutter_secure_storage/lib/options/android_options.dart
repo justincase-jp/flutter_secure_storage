@@ -1,4 +1,8 @@
 part of '../flutter_secure_storage.dart';
+// Documentation ignored because enums will be removed in a later release
+//ignore_for_file: public_member_api_docs
+//ignore_for_file: constant_identifier_names
+//ignore_for_file: deprecated_member_use_from_same_package
 
 enum KeyCipherAlgorithm {
   RSA_ECB_PKCS1Padding,
@@ -10,8 +14,11 @@ enum StorageCipherAlgorithm {
   AES_GCM_NoPadding,
 }
 
+/// Specific options for Android platform.
 class AndroidOptions extends Options {
   const AndroidOptions({
+    @Deprecated('EncryptedSharedPreferences will always be true, and will be '
+        'removed in the next release')
     bool encryptedSharedPreferences = false,
     bool resetOnError = false,
     KeyCipherAlgorithm keyCipherAlgorithm =
@@ -69,12 +76,8 @@ class AndroidOptions extends Options {
   Map<String, String> toMap() => <String, String>{
         'encryptedSharedPreferences': '$_encryptedSharedPreferences',
         'resetOnError': '$_resetOnError',
-        // TODO: Update min SDK from 2.12 to 2.15 in new major version to fix this deprecation warning
-        // ignore: deprecated_member_use
-        'keyCipherAlgorithm': describeEnum(_keyCipherAlgorithm),
-        // TODO: Update min SDK from 2.12 to 2.15 in new major version to fix this deprecation warning
-        // ignore: deprecated_member_use
-        'storageCipherAlgorithm': describeEnum(_storageCipherAlgorithm),
+        'keyCipherAlgorithm': _keyCipherAlgorithm.name,
+        'storageCipherAlgorithm': _storageCipherAlgorithm.name,
         'sharedPreferencesName': sharedPreferencesName ?? '',
         'preferencesKeyPrefix': preferencesKeyPrefix ?? '',
       };
