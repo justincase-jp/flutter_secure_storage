@@ -57,7 +57,10 @@ class HomePageState extends State<HomePage> {
       _items
         ..clear()
         ..addAll(all.entries.map((e) => _SecItem(e.key, e.value)))
-        ..sort((a, b) => (int.tryParse(a.key) ?? 10).compareTo(int.tryParse(b.key) ?? 11));
+        ..sort(
+          (a, b) =>
+              (int.tryParse(a.key) ?? 10).compareTo(int.tryParse(b.key) ?? 11),
+        );
     });
   }
 
