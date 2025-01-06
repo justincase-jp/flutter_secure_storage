@@ -1,3 +1,6 @@
+## 2.0.1
+Remove dart:io to support WASM build of web.
+
 ## 2.0.0
 - This plugin requires a minimum dart sdk of 3.3.0 or higher and a minimum flutter version of 3.19.0.
 - Migrated to new analyzer and clean-up code.
