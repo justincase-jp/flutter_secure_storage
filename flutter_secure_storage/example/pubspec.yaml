@@ -6,7 +6,8 @@ version: 1.0.0+1
 publish_to: 'none'
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: '>=3.19.0'
 
 dependencies:
   flutter:
@@ -24,8 +25,8 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  lint: any
   test: any
+  very_good_analysis: ^7.0.0
 
 flutter:
   uses-material-design: true

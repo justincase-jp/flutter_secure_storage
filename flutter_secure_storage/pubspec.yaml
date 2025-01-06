@@ -4,8 +4,8 @@ version: 9.2.3
 repository: https://github.com/mogol/flutter_secure_storage/tree/develop/flutter_secure_storage
 
 environment:
-  sdk: ">=2.12.0 <4.0.0"
-  flutter: ">=2.0.0"
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: '>=3.19.0'
 
 flutter:
   plugin:
@@ -41,7 +41,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  lint: ^2.0.0
+  very_good_analysis: ^7.0.0
 
 # We need to manually declare supported platforms, because pub.dev won't find them.
 platforms:

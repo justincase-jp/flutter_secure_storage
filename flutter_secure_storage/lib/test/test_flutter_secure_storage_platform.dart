@@ -1,9 +1,9 @@
 import 'package:flutter_secure_storage_platform_interface/flutter_secure_storage_platform_interface.dart';
 
 class TestFlutterSecureStoragePlatform extends FlutterSecureStoragePlatform {
-  final Map<String, String> data;
 
   TestFlutterSecureStoragePlatform(this.data);
+  final Map<String, String> data;
 
   @override
   Future<bool> containsKey({

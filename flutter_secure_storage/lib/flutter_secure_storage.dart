@@ -1,4 +1,4 @@
-library flutter_secure_storage;
+library;
 
 import 'dart:io';
 
@@ -17,14 +17,19 @@ part './options/windows_options.dart';
 
 final Map<String, List<ValueChanged<String?>>> _listeners = {};
 
+/// A class to manage secure storage in a Flutter application across multiple platforms.
 class FlutterSecureStorage {
-  final IOSOptions iOptions;
-  final AndroidOptions aOptions;
-  final LinuxOptions lOptions;
-  final WindowsOptions wOptions;
-  final WebOptions webOptions;
-  final MacOsOptions mOptions;
-
+  /// Creates a [FlutterSecureStorage] instance with optional platform-specific configurations.
+  /// 
+  /// Each platform-specific configuration allows customization of secure storage behavior
+  /// for the corresponding platform.
+  /// 
+  /// [iOptions] - Options specific to iOS.
+  /// [aOptions] - Options specific to Android.
+  /// [lOptions] - Options specific to Linux.
+  /// [wOptions] - Options specific to Windows.
+  /// [webOptions] - Options specific to Web.
+  /// [mOptions] - Options specific to macOS.
   const FlutterSecureStorage({
     this.iOptions = IOSOptions.defaultOptions,
     this.aOptions = AndroidOptions.defaultOptions,
@@ -34,7 +39,37 @@ class FlutterSecureStorage {
     this.mOptions = MacOsOptions.defaultOptions,
   });
 
-  static const UNSUPPORTED_PLATFORM = 'unsupported_platform';
+  /// Platform-specific options for iOS.
+  /// 
+  /// Configures secure storage behavior for iOS devices.
+  final IOSOptions iOptions;
+
+  /// Platform-specific options for Android.
+  /// 
+  /// Configures secure storage behavior for Android devices.
+  final AndroidOptions aOptions;
+
+  /// Platform-specific options for Linux.
+  /// 
+  /// Configures secure storage behavior for Linux systems.
+  final LinuxOptions lOptions;
+
+  /// Platform-specific options for Windows.
+  /// 
+  /// Configures secure storage behavior for Windows systems.
+  final WindowsOptions wOptions;
+
+  /// Platform-specific options for Web.
+  /// 
+  /// Configures secure storage behavior for Web applications.
+  final WebOptions webOptions;
+
+  /// Platform-specific options for macOS.
+  /// 
+  /// Configures secure storage behavior for macOS devices.
+  final MacOsOptions mOptions;
+
+  static const _unsupportedPlatform = 'unsupported_platform';
 
   FlutterSecureStoragePlatform get _platform =>
       FlutterSecureStoragePlatform.instance;
@@ -322,7 +357,7 @@ class FlutterSecureStorage {
     } else if (Platform.isMacOS) {
       return mOptions?.params ?? this.mOptions.params;
     } else {
-      throw UnsupportedError(UNSUPPORTED_PLATFORM);
+      throw UnsupportedError(_unsupportedPlatform);
     }
   }
 

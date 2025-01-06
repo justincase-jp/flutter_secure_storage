@@ -7,43 +7,43 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: ItemsWidget()));
     await tester.pumpAndSettle();
 
-    final HomePageObject pageObject = HomePageObject(tester);
+    final pageObject = HomePageObject(tester);
 
     await pageObject.deleteAll();
     pageObject.hasNoRow(0);
 
     await pageObject.addRandom();
-    await Future.delayed(const Duration(seconds: 3));
+    await Future<dynamic>.delayed(const Duration(seconds: 3));
     pageObject.hasRow(0);
     await pageObject.addRandom();
-    await Future.delayed(const Duration(seconds: 3));
+    await Future<dynamic>.delayed(const Duration(seconds: 3));
     pageObject.hasRow(1);
 
     await pageObject.editRow('Row 0', 0);
-    await Future.delayed(const Duration(seconds: 3));
+    await Future<dynamic>.delayed(const Duration(seconds: 3));
     await pageObject.editRow('Row 1', 1);
 
-    await Future.delayed(const Duration(seconds: 3));
+    await Future<dynamic>.delayed(const Duration(seconds: 3));
 
     pageObject.rowHasTitle('Row 0', 0);
-    await Future.delayed(const Duration(seconds: 3));
+    await Future<dynamic>.delayed(const Duration(seconds: 3));
     pageObject.rowHasTitle('Row 1', 1);
 
-    await Future.delayed(const Duration(seconds: 3));
+    await Future<dynamic>.delayed(const Duration(seconds: 3));
 
     await pageObject.deleteRow(1);
-    await Future.delayed(const Duration(seconds: 3));
+    await Future<dynamic>.delayed(const Duration(seconds: 3));
     pageObject.hasNoRow(1);
 
-    await Future.delayed(const Duration(seconds: 3));
+    await Future<dynamic>.delayed(const Duration(seconds: 3));
 
     pageObject.rowHasTitle('Row 0', 0);
-    await Future.delayed(const Duration(seconds: 3));
+    await Future<dynamic>.delayed(const Duration(seconds: 3));
     await pageObject.deleteRow(0);
-    await Future.delayed(const Duration(seconds: 3));
+    await Future<dynamic>.delayed(const Duration(seconds: 3));
     pageObject.hasNoRow(0);
 
-    await Future.delayed(const Duration(seconds: 1));
+    await Future<dynamic>.delayed(const Duration(seconds: 1));
 
     await pageObject.isProtectedDataAvailable();
 
@@ -78,17 +78,17 @@ class HomePageObject {
   }
 
   Future<void> editRow(String title, int index) async {
-    final Finder popupRow = find.byKey(Key('popup_row_$index'));
+    final popupRow = find.byKey(Key('popup_row_$index'));
     expect(popupRow, findsOneWidget);
     await tester.tap(popupRow);
     await tester.pumpAndSettle();
 
-    final Finder editRow = find.byKey(Key('edit_row_$index'));
+    final editRow = find.byKey(Key('edit_row_$index'));
     expect(editRow, findsOneWidget);
     await tester.tap(editRow);
     await tester.pumpAndSettle();
 
-    final Finder textFieldFinder = find.byKey(const Key('title_field'));
+    final textFieldFinder = find.byKey(const Key('title_field'));
     expect(textFieldFinder, findsOneWidget);
     await tester.tap(textFieldFinder);
     await tester.pumpAndSettle();
@@ -96,14 +96,14 @@ class HomePageObject {
     await tester.enterText(textFieldFinder, title);
     await tester.pumpAndSettle();
 
-    final Finder saveButtonFinder = find.byKey(const Key('save'));
+    final saveButtonFinder = find.byKey(const Key('save'));
     expect(saveButtonFinder, findsOneWidget);
     await tester.tap(saveButtonFinder);
     await tester.pumpAndSettle();
   }
 
   void rowHasTitle(String title, int index) {
-    final Finder titleRow = find.byKey(Key('title_row_$index'));
+    final titleRow = find.byKey(Key('title_row_$index'));
     expect(titleRow, findsOneWidget);
     expect((titleRow.evaluate().single.widget as Text).data, equals(title));
   }
@@ -113,12 +113,12 @@ class HomePageObject {
   }
 
   Future<void> deleteRow(int index) async {
-    final Finder popupRow = find.byKey(Key('popup_row_$index'));
+    final popupRow = find.byKey(Key('popup_row_$index'));
     expect(popupRow, findsOneWidget);
     await tester.tap(popupRow);
     await tester.pumpAndSettle();
 
-    final Finder deleteRow = find.byKey(Key('delete_row_$index'));
+    final deleteRow = find.byKey(Key('delete_row_$index'));
     expect(deleteRow, findsOneWidget);
     await tester.tap(deleteRow);
     await tester.pumpAndSettle();

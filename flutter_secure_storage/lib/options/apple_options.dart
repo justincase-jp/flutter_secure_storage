@@ -8,17 +8,21 @@ enum KeychainAccessibility {
   /// Items with this attribute do not migrate to a new device.
   passcode,
 
-  /// The data in the keychain item can be accessed only while the device is unlocked by the user.
+  /// The data in the keychain item can be accessed only while the device is
+  /// unlocked by the user.
   unlocked,
 
-  /// The data in the keychain item can be accessed only while the device is unlocked by the user.
+  /// The data in the keychain item can be accessed only while the device is
+  /// unlocked by the user.
   /// Items with this attribute do not migrate to a new device.
   unlocked_this_device,
 
-  /// The data in the keychain item cannot be accessed after a restart until the device has been unlocked once by the user.
+  /// The data in the keychain item cannot be accessed after a restart until the
+  /// device has been unlocked once by the user.
   first_unlock,
 
-  /// The data in the keychain item cannot be accessed after a restart until the device has been unlocked once by the user.
+  /// The data in the keychain item cannot be accessed after a restart until the
+  /// device has been unlocked once by the user.
   /// Items with this attribute do not migrate to a new device.
   first_unlock_this_device,
 }
@@ -36,7 +40,8 @@ abstract class AppleOptions extends Options {
 
   static const defaultAccountName = 'flutter_secure_storage_service';
 
-  /// A key with a value that’s a string indicating the access group the item is in.
+  /// A key with a value that’s a string indicating the access group the item is
+  /// in.
   ///
   /// (kSecAttrAccessGroup)
   final String? _groupId;
@@ -51,7 +56,8 @@ abstract class AppleOptions extends Options {
   /// (kSecAttrAccessible)
   final KeychainAccessibility? _accessibility;
 
-  /// A key with a value that’s a string indicating whether the item synchronizes through iCloud.
+  /// A key with a value that’s a string indicating whether the item
+  /// synchronizes through iCloud.
   ///
   /// (kSecAttrSynchronizable)
   final bool _synchronizable;
@@ -59,11 +65,9 @@ abstract class AppleOptions extends Options {
   @override
   Map<String, String> toMap() => <String, String>{
         if (_accessibility != null)
-          // TODO: Update min SDK from 2.12 to 2.15 in new major version to fix this deprecation warning
-          // ignore: deprecated_member_use
-          'accessibility': describeEnum(_accessibility!),
-        if (_accountName != null) 'accountName': _accountName!,
-        if (_groupId != null) 'groupId': _groupId!,
+          'accessibility': _accessibility.name,
+        if (_accountName != null) 'accountName': _accountName,
+        if (_groupId != null) 'groupId': _groupId,
         'synchronizable': '$_synchronizable',
       };
 }
