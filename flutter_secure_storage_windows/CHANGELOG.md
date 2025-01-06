@@ -1,4 +1,4 @@
-## 3.2.0
+## 4.0.0
 Migrates to `win32` version 5.5.4 to support Dart 3.4 / Flutter 3.22.0.
 
 ## 3.1.2
