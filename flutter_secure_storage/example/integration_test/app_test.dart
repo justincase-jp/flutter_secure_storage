@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Secure Storage Example', (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(home: ItemsWidget()));
+    await tester.pumpWidget(const MaterialApp(home: HomePage()));
     await tester.pumpAndSettle();
 
     final pageObject = HomePageObject(tester);

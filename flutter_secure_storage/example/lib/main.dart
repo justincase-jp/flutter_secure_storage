@@ -6,21 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() {
-  runApp(const MaterialApp(home: ItemsWidget()));
+  runApp(const MaterialApp(home: HomePage()));
 }
 
 enum _Actions { deleteAll, isProtectedDataAvailable }
 
 enum _ItemActions { delete, edit, containsKey, read }
 
-class ItemsWidget extends StatefulWidget {
-  const ItemsWidget({super.key});
+/// Homepage of the example app of flutter_secure_storage
+class HomePage extends StatefulWidget {
+
+  /// Creates an instance of `HomePage`.
+  const HomePage({super.key});
 
   @override
-  ItemsWidgetState createState() => ItemsWidgetState();
+  HomePageState createState() => HomePageState();
 }
 
-class ItemsWidgetState extends State<ItemsWidget> {
+/// The `HomePageState` class represents the mutable state for the `HomePage`
+/// widget. It manages the state and behavior of the user interface.
+class HomePageState extends State<HomePage> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final TextEditingController _accountNameController =
       TextEditingController(text: 'flutter_secure_storage_service');

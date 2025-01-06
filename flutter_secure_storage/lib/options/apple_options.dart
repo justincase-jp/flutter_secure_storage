@@ -1,5 +1,7 @@
 part of '../flutter_secure_storage.dart';
 
+// Ignore enum check and change it in a later release
+//ignore_for_file: constant_identifier_names
 /// KeyChain accessibility attributes as defined here:
 /// https://developer.apple.com/documentation/security/ksecattraccessible?language=objc
 enum KeychainAccessibility {
@@ -26,8 +28,23 @@ enum KeychainAccessibility {
   /// Items with this attribute do not migrate to a new device.
   first_unlock_this_device,
 }
-
+/// Specific options for Apple platform.
 abstract class AppleOptions extends Options {
+
+  /// Creates an instance of `AppleOptions` with configurable parameters
+  /// for keychain access and storage behavior.
+  ///
+  /// Parameters:
+  /// - [groupId]: The app group identifier for shared access. Enables sharing
+  ///   of keychain items across apps within the same app group.
+  /// - [accountName]: The account name associated with the keychain items.
+  ///   Defaults to [AppleOptions.defaultAccountName].
+  /// - [accessibility]: The level of accessibility for keychain items
+  ///   (e.g., accessible after first unlock, when unlocked, etc.).
+  ///   Defaults to [KeychainAccessibility.unlocked].
+  /// - [synchronizable]: Whether the keychain items are synchronized with
+  ///   iCloud.
+  ///   Defaults to `false`.
   const AppleOptions({
     String? groupId,
     String? accountName = AppleOptions.defaultAccountName,
@@ -38,6 +55,7 @@ abstract class AppleOptions extends Options {
         _accountName = accountName,
         _synchronizable = synchronizable;
 
+  /// The default account name associated with the keychain items.
   static const defaultAccountName = 'flutter_secure_storage_service';
 
   /// A key with a value that’s a string indicating the access group the item is

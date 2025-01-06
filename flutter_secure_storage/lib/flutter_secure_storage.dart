@@ -17,12 +17,14 @@ part './options/windows_options.dart';
 
 final Map<String, List<ValueChanged<String?>>> _listeners = {};
 
-/// A class to manage secure storage in a Flutter application across multiple platforms.
+/// A class to manage secure storage in a Flutter application across multiple
+/// platforms.
 class FlutterSecureStorage {
-  /// Creates a [FlutterSecureStorage] instance with optional platform-specific configurations.
+  /// Creates a [FlutterSecureStorage] instance with optional platform-specific
+  /// configurations.
   /// 
-  /// Each platform-specific configuration allows customization of secure storage behavior
-  /// for the corresponding platform.
+  /// Each platform-specific configuration allows customization of secure
+  /// storage behavior for the corresponding platform.
   /// 
   /// [iOptions] - Options specific to iOS.
   /// [aOptions] - Options specific to Android.
@@ -74,9 +76,10 @@ class FlutterSecureStorage {
   FlutterSecureStoragePlatform get _platform =>
       FlutterSecureStoragePlatform.instance;
 
-  ///Register [listener] for [key] with the [value] injected for the listener.
-  ///The [listener] will still be called when you delete the [key] with the injected [value] as null.
-  ///This listener will be added to the list of registered listeners for that [key].
+  /// Register [listener] for [key] with the value injected for the listener.
+  /// The [listener] will still be called when you delete the [key] with the
+  /// injected value as null. This listener will be added to the list of
+  /// registered listeners for that [key].
   void registerListener({
     required String key,
     required ValueChanged<String?> listener,
@@ -84,8 +87,8 @@ class FlutterSecureStorage {
     _listeners[key] = [..._listeners[key] ?? [], listener];
   }
 
-  ///Unregister listener for [Key].
-  ///The other registered listeners for [key] will be remained.
+  /// Unregister listener for [Key].
+  /// The other registered listeners for [key] will be remained.
   void unregisterListener({
     required String key,
     required ValueChanged<String?> listener,
@@ -100,12 +103,12 @@ class FlutterSecureStorage {
     _listeners[key] = listenersForKey;
   }
 
-  ///Unregister all listeners for [key].
+  /// Unregister all listeners for [key].
   void unregisterAllListenersForKey({required String key}) {
     _listeners.remove(key);
   }
 
-  ///Unregister all listeners for all keys.
+  /// Unregister all listeners for all keys.
   void unregisterAllListeners() {
     _listeners.clear();
   }
@@ -163,7 +166,8 @@ class FlutterSecureStorage {
     _callListenersForKey(key, value);
   }
 
-  /// Decrypts and returns the value for the given [key] or null if [key] is not in the storage.
+  /// Decrypts and returns the value for the given [key] or null if [key] is not
+  /// in the storage.
   ///
   /// [key] shouldn't be null.
   /// [iOptions] optional iOS options
@@ -372,8 +376,8 @@ class FlutterSecureStorage {
 
   /// iOS and macOS only feature.
   ///
-  /// On macOS this is only available on macOS 12 or newer. On older versions always returns true.
-  /// On all unsupported platforms returns null
+  /// On macOS this is only available on macOS 12 or newer. On older versions
+  /// always returns true. On all unsupported platforms returns null
   ///
   /// iOS: https://developer.apple.com/documentation/uikit/uiapplication/1622925-isprotecteddataavailable
   /// macOS: https://developer.apple.com/documentation/appkit/nsapplication/3752992-isprotecteddataavailable
