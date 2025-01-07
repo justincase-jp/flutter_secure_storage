@@ -1,3 +1,6 @@
+## 10.0.0-beta.2
+* [Web] Update flutter_secure_storage_platform_interface to be compatible with WASM.
+
 ## 10.0.0-beta.1
 This new major release has some big changes. This plugin requires a minimum dart sdk of 3.3.0 or higher
 and a minimum flutter version of 3.19.0.
