@@ -196,11 +196,16 @@ class FlutterSecureStorage {
             if status == errSecSuccess {
                 return FlutterSecureStorageResponse(status: status, value: nil)
             }
-
+            
             // Update failed, possibly due to different kSecAttrAccessible.
-            // Delete the entry and create a new one in the next step.
-            // Don't pass synchronizable and accessibility
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: nil, accessibility: nil)
+            // Delete the entry for all possible kSecAttrAccessible and create
+            // a new one with the provided kSecAttrAccessible in the next step.
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: nil)
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "passcode")
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "unlocked")
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "unlocked_this_device")
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "first_unlock")
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "first_unlock_this_device")
         }
 
         // Entry does not exist or was deleted, create a new entry.
