@@ -5,8 +5,15 @@
 //  Created by Julian Steenbakker on 22/08/2022.
 //
 
-import Flutter
-import UIKit
+#if os(iOS)
+  import Flutter
+  import UIKit
+#else
+  import AppKit
+  import FlutterMacOS
+#endif
+
+
 
 public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
 
@@ -15,8 +22,14 @@ public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterS
     private let serialExecutionQueue = DispatchQueue(label: "flutter_secure_storage_service")
 
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "plugins.it_nomads.com/flutter_secure_storage", binaryMessenger: registrar.messenger())
-        let eventChannel = FlutterEventChannel(name: "plugins.it_nomads.com/flutter_secure_storage/events", binaryMessenger: registrar.messenger())
+        #if os(iOS)
+                let messenger = registrar.messenger()
+        #else
+                let messenger = registrar.messenger
+        #endif
+        
+        let channel = FlutterMethodChannel(name: "plugins.it_nomads.com/flutter_secure_storage", binaryMessenger: messenger)
+        let eventChannel = FlutterEventChannel(name: "plugins.it_nomads.com/flutter_secure_storage/events", binaryMessenger: messenger)
         let instance = FlutterSecureStorageDarwinPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
         registrar.addApplicationDelegate(instance)
@@ -47,28 +60,20 @@ public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterS
             case "isProtectedDataAvailable":
                 // UIApplication is not thread safe
                 DispatchQueue.main.async {
+                #if os(iOS)
                     result(UIApplication.shared.isProtectedDataAvailable)
+                #else
+                    if #available(macOS 12.0, *) {
+                        result(NSApplication.shared.isProtectedDataAvailable)
+                    } else {
+                        result(true)
+                    }
+                #endif
                 }
             default:
                 handleResult(FlutterMethodNotImplemented)
             }
         }
-    }
-
-    public func applicationProtectedDataDidBecomeAvailable(_ application: UIApplication) {
-        guard let sink = secStoreAvailabilitySink else {
-            return
-        }
-
-        sink(true)
-    }
-
-    public func applicationProtectedDataWillBecomeUnavailable(_ application: UIApplication) {
-        guard let sink = secStoreAvailabilitySink else {
-            return
-        }
-
-        sink(false)
     }
 
     public func onListen(withArguments arguments: Any?,
