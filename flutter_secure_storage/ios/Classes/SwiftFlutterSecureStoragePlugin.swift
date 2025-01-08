@@ -8,7 +8,7 @@
 import Flutter
 import UIKit
 
-public class SwiftFlutterSecureStoragePlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
+public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
 
     private let flutterSecureStorageManager: FlutterSecureStorage = FlutterSecureStorage()
     private var secStoreAvailabilitySink: FlutterEventSink?

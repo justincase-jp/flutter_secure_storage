@@ -14,11 +14,11 @@ flutter:
         package: com.it_nomads.fluttersecurestorage
         pluginClass: FlutterSecureStoragePlugin
       ios:
-        pluginClass: FlutterSecureStoragePlugin
+        default_package: flutter_secure_storage_darwin
+      macos:
+        default_package: flutter_secure_storage_darwin
       linux:
         default_package: flutter_secure_storage_linux
-      macos:
-        default_package: flutter_secure_storage_macos
       web:
         default_package: flutter_secure_storage_web
       windows:
@@ -32,7 +32,8 @@ dependencies:
   # validation, so we set a ^ constraint.
   # https://github.com/flutter/flutter/issues/46264
   flutter_secure_storage_linux: ^2.0.0
-  flutter_secure_storage_macos: ^4.0.0
+  flutter_secure_storage_darwin:
+    path: ../flutter_secure_storage_darwin
   flutter_secure_storage_platform_interface: ^2.0.1
   flutter_secure_storage_web: ^2.0.0
   flutter_secure_storage_windows: ^4.0.0
