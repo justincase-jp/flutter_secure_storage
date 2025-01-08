@@ -145,8 +145,8 @@ class FlutterSecureStorage {
         return responseWithoutSynchronizable.value != nil ? responseWithoutSynchronizable : readValue(synchronizable: true)
     }
 
-    internal func deleteAll(groupId: String?, accountName: String?) -> FlutterSecureStorageResponse {
-        let keychainQuery = baseQuery(key: nil, groupId: groupId, accountName: accountName, synchronizable: nil, accessibility: nil, returnData: nil)
+    internal func deleteAll(groupId: String?, accountName: String?, synchronizable: Bool?, accessibility: String?) -> FlutterSecureStorageResponse {
+        let keychainQuery = baseQuery(key: nil, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: accessibility, returnData: nil)
         let status = SecItemDelete(keychainQuery as CFDictionary)
 
         if (status == errSecItemNotFound) {
@@ -157,8 +157,8 @@ class FlutterSecureStorage {
         return FlutterSecureStorageResponse(status: status, value: nil)
     }
 
-    internal func delete(key: String, groupId: String?, accountName: String?) -> FlutterSecureStorageResponse {
-        let keychainQuery = baseQuery(key: key, groupId: groupId, accountName: accountName, synchronizable: nil, accessibility: nil, returnData: true)
+    internal func delete(key: String, groupId: String?, accountName: String?, synchronizable: Bool?, accessibility: String?) -> FlutterSecureStorageResponse {
+        let keychainQuery = baseQuery(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: accessibility, returnData: true)
         let status = SecItemDelete(keychainQuery as CFDictionary)
 
         // Return nil if the key is not found
@@ -199,7 +199,7 @@ class FlutterSecureStorage {
 
             // Update failed, possibly due to different kSecAttrAccessible.
             // Delete the entry and create a new one in the next step.
-            delete(key: key, groupId: groupId, accountName: accountName)
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: accessibility)
         }
 
         // Entry does not exist or was deleted, create a new entry.
