@@ -199,7 +199,8 @@ class FlutterSecureStorage {
 
             // Update failed, possibly due to different kSecAttrAccessible.
             // Delete the entry and create a new one in the next step.
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: accessibility)
+            // Don't pass synchronizable and accessibility
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: nil, accessibility: nil)
         }
 
         // Entry does not exist or was deleted, create a new entry.
