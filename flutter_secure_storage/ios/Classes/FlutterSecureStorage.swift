@@ -196,16 +196,21 @@ class FlutterSecureStorage {
             if status == errSecSuccess {
                 return FlutterSecureStorageResponse(status: status, value: nil)
             }
-            
+
             // Update failed, possibly due to different kSecAttrAccessible.
-            // Delete the entry for all possible kSecAttrAccessible and create
-            // a new one with the provided kSecAttrAccessible in the next step.
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: nil)
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "passcode")
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "unlocked")
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "unlocked_this_device")
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "first_unlock")
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "first_unlock_this_device")
+            // Delete the entry for all possible kSecAttrAccessible values.
+            let allAccessibilityLevels: [String?] = [
+                nil,
+                kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly as String,
+                kSecAttrAccessibleWhenUnlocked as String,
+                kSecAttrAccessibleWhenUnlockedThisDeviceOnly as String,
+                kSecAttrAccessibleAfterFirstUnlock as String,
+                kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly as String
+            ]
+
+            for accessibilityLevel in allAccessibilityLevels {
+                _ = delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: accessibilityLevel)
+            }
         }
 
         // Entry does not exist or was deleted, create a new entry.
