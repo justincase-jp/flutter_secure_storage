@@ -1,11 +1,11 @@
 name: flutter_secure_storage_darwin
-description: "A new Flutter project."
-version: 0.0.1
-homepage:
+description: "Apple (ios and macos) implementation of flutter_secure_storage"
+version: 0.1.0
+homepage: https://github.com/juliansteenbakker/flutter_secure_storage
 
 environment:
-  sdk: ^3.3.0
-  flutter: '>=3.7.0'
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: '>=3.19.0'
 
 dependencies:
   flutter:
@@ -15,7 +15,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
