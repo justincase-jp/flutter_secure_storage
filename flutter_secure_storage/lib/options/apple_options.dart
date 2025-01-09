@@ -3,27 +3,30 @@ part of '../flutter_secure_storage.dart';
 /// KeyChain accessibility attributes as defined here:
 /// https://developer.apple.com/documentation/security/ksecattraccessible?language=objc
 enum KeychainAccessibility {
-  /// **Shared**. The data in the keychain can only be accessed when the device is unlocked.
-  /// Only available if a passcode is set on the device.
+  /// **Shared**. The data in the keychain can only be accessed when the device
+  /// is unlocked. Only available if a passcode is set on the device.
   /// Items with this attribute do not migrate to a new device.
   passcode,
 
-  /// **Shared**. The data in the keychain item can be accessed only while the device is
-  /// unlocked by the user.
+  /// **Shared**. The data in the keychain item can be accessed only while the
+  /// device is unlocked by the user.
   unlocked,
 
-  /// **Shared**. The data in the keychain item can be accessed only while the device is
-  /// unlocked by the user.
+  /// **Shared**. The data in the keychain item can be accessed only while the
+  /// device is unlocked by the user.
   /// Items with this attribute do not migrate to a new device.
+  // ignore: constant_identifier_names
   unlocked_this_device,
 
-  /// **Shared**. The data in the keychain item cannot be accessed after a restart until the
-  /// device has been unlocked once by the user.
+  /// **Shared**. The data in the keychain item cannot be accessed after a
+  /// restart until the device has been unlocked once by the user.
+  // ignore: constant_identifier_names
   first_unlock,
 
-  /// **Shared**. The data in the keychain item cannot be accessed after a restart until the
-  /// device has been unlocked once by the user.
+  /// **Shared**. The data in the keychain item cannot be accessed after a
+  /// restart until the device has been unlocked once by the user.
   /// Items with this attribute do not migrate to a new device.
+  // ignore: constant_identifier_names
   first_unlock_this_device,
 }
 
@@ -51,6 +54,7 @@ class AppleOptions extends Options {
     this.usesDataProtectionKeychain = true,
   });
 
+  /// The default account name associated with the keychain items.
   static const defaultAccountName = 'flutter_secure_storage_service';
 
   /// `kSecAttrService` (iOS/macOS): **Shared**.
@@ -59,11 +63,13 @@ class AppleOptions extends Options {
   final String? accountName;
 
   /// `kSecAttrAccessGroup` (iOS only): **Shared**.
-  /// Specifies the app group for shared access. Allows multiple apps in the same app group to access the item.
+  /// Specifies the app group for shared access. Allows multiple apps in the
+  /// same app group to access the item.
   final String? groupId;
 
   /// `kSecAttrAccessible` (iOS/macOS): **Shared**.
-  /// Defines the accessibility level of the keychain item. Controls when the item is accessible
+  /// Defines the accessibility level of the keychain item. Controls when the
+  /// item is accessible
   /// (e.g., when the device is unlocked or after first unlock).
   final KeychainAccessibility? accessibility;
 
@@ -73,15 +79,18 @@ class AppleOptions extends Options {
   final bool synchronizable;
 
   /// `kSecAttrLabel` (iOS/macOS): **Unique**.
-  /// A user-visible label for the keychain item. Helps identify the item in keychain management tools.
+  /// A user-visible label for the keychain item. Helps identify the item in
+  /// keychain management tools.
   final String? label;
 
   /// `kSecAttrDescription` (iOS/macOS): **Shared or Unique**.
-  /// A description of the keychain item. Can describe a category of items (shared) or be specific to a single item.
+  /// A description of the keychain item. Can describe a category of items
+  /// (shared) or be specific to a single item.
   final String? description;
 
   /// `kSecAttrComment` (iOS/macOS): **Shared or Unique**.
-  /// A comment associated with the keychain item. Often used for metadata or debugging information.
+  /// A comment associated with the keychain item. Often used for metadata or
+  /// debugging information.
   final String? comment;
 
   /// `kSecAttrIsInvisible` (iOS/macOS): **Shared or Unique**.
@@ -95,11 +104,13 @@ class AppleOptions extends Options {
   final bool? isNegative;
 
   /// `kSecAttrCreationDate` (iOS/macOS): **Unique**.
-  /// The creation date of the keychain item. Automatically set by the system when an item is created.
+  /// The creation date of the keychain item. Automatically set by the system
+  /// when an item is created.
   final DateTime? creationDate;
 
   /// `kSecAttrModificationDate` (iOS/macOS): **Unique**.
-  /// The last modification date of the keychain item. Automatically updated when an item is modified.
+  /// The last modification date of the keychain item. Automatically updated
+  /// when an item is modified.
   final DateTime? lastModifiedDate;
 
   /// `kSecMatchLimit` (iOS/macOS): **Action-Specific**.
@@ -123,7 +134,8 @@ class AppleOptions extends Options {
   final String? authenticationUIBehavior;
 
   /// `kSecAttrAccessControl` (iOS/macOS): **Shared or Unique**.
-  /// Specifies access control settings for the item (e.g., biometrics, passcode).
+  /// Specifies access control settings for the item
+  /// (e.g., biometrics, passcode).
   /// Shared if multiple items use the same access control.
   final String? accessControlSettings;
 
@@ -132,26 +144,34 @@ class AppleOptions extends Options {
   /// Not applicable on iOS.
   final bool usesDataProtectionKeychain;
 
+  /// A predefined `AppleOptions` instance with default settings.
+  ///
+  /// This can be used as a fallback or when no specific options are required.
   static const AppleOptions defaultOptions = AppleOptions();
 
   @override
   Map<String, String> toMap() => <String, String>{
-    if (accountName != null) 'accountName': accountName!,
-    if (groupId != null) 'groupId': groupId!,
-    if (accessibility != null) 'accessibility': accessibility!.name,
-    if (label != null) 'label': label!,
-    if (description != null) 'description': description!,
-    if (comment != null) 'comment': comment!,
-    'synchronizable': '$synchronizable',
-    if (isInvisible != null) 'isInvisible': '$isInvisible',
-    if (isNegative != null) 'isNegative': '$isNegative',
-    if (creationDate != null) 'creationDate': creationDate!.toIso8601String(),
-    if (lastModifiedDate != null) 'lastModifiedDate': lastModifiedDate!.toIso8601String(),
-    if (resultLimit != null) 'resultLimit': resultLimit!.toString(),
-    'shouldReturnData': '$shouldReturnData',
-    if (shouldReturnPersistentReference != null) 'shouldReturnPersistentReference': '$shouldReturnPersistentReference',
-    if (authenticationUIBehavior != null) 'authenticationUIBehavior': authenticationUIBehavior!,
-    if (accessControlSettings != null) 'accessControlSettings': accessControlSettings!,
-    'usesDataProtectionKeychain': '$usesDataProtectionKeychain',
-  };
+        if (accountName != null) 'accountName': accountName!,
+        if (groupId != null) 'groupId': groupId!,
+        if (accessibility != null) 'accessibility': accessibility!.name,
+        if (label != null) 'label': label!,
+        if (description != null) 'description': description!,
+        if (comment != null) 'comment': comment!,
+        'synchronizable': '$synchronizable',
+        if (isInvisible != null) 'isInvisible': '$isInvisible',
+        if (isNegative != null) 'isNegative': '$isNegative',
+        if (creationDate != null)
+          'creationDate': creationDate!.toIso8601String(),
+        if (lastModifiedDate != null)
+          'lastModifiedDate': lastModifiedDate!.toIso8601String(),
+        if (resultLimit != null) 'resultLimit': resultLimit!.toString(),
+        'shouldReturnData': '$shouldReturnData',
+        if (shouldReturnPersistentReference != null)
+          'shouldReturnPersistentReference': '$shouldReturnPersistentReference',
+        if (authenticationUIBehavior != null)
+          'authenticationUIBehavior': authenticationUIBehavior!,
+        if (accessControlSettings != null)
+          'accessControlSettings': accessControlSettings!,
+        'usesDataProtectionKeychain': '$usesDataProtectionKeychain',
+      };
 }
