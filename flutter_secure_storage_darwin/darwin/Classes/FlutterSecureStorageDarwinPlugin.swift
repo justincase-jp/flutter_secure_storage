@@ -83,7 +83,7 @@ public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterS
 
     private func read(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
         let (params, _) = parseCall(call)
-        guard let key = params.key else {
+        guard let _ = params.key else {
             result(FlutterError(code: "Missing Parameter", message: "read requires key parameter", details: nil))
             return
         }
@@ -104,8 +104,8 @@ public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterS
     }
 
     private func delete(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
-        let (params, value) = parseCall(call)
-        guard let account = params.key else {
+        let (params, _) = parseCall(call)
+        guard let _ = params.key else {
             result(FlutterError(code: "Missing Parameter", message: "delete requires key parameter", details: nil))
             return
         }
@@ -115,20 +115,20 @@ public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterS
     }
 
     private func deleteAll(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
-        let (params, value) = parseCall(call)
+        let (params, _) = parseCall(call)
         let response = flutterSecureStorageManager.deleteAll(params: params)
         handleResponse(response, result)
     }
 
     private func readAll(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
-        let (params, value) = parseCall(call)
+        let (params, _) = parseCall(call)
         let response = flutterSecureStorageManager.readAll(params: params)
         handleResponse(response, result)
     }
 
     private func containsKey(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
-        let (params, value) = parseCall(call)
-        guard let account = params.key else {
+        let (params, _) = parseCall(call)
+        guard let _ = params.key else {
             result(FlutterError(code: "Missing Parameter", message: "containsKey requires key parameter", details: nil))
             return
         }
@@ -154,16 +154,16 @@ public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterS
             key: arguments["key"] as? String,
             accessGroup: options["groupId"] as? String,
             service: options["accountName"] as? String,
-            isSynchronizable: (options["synchronizable"] as? String).flatMap { Bool($0) } ?? false,
+            isSynchronizable: (options["synchronizable"] as? String).flatMap { Bool($0) },
             accessibilityLevel: options["accessibility"] as? String,
             usesDataProtectionKeychain: (options["useDataProtectionKeyChain"] as? String).flatMap { Bool($0) } ?? true,
             shouldReturnData: true, // Default behavior for most operations.
             itemLabel: options["label"] as? String,
             itemDescription: options["description"] as? String,
             itemComment: options["comment"] as? String,
-            isHidden: (options["isHidden"] as? String).flatMap { Bool($0) } ?? false,
-            isPlaceholder: (options["isPlaceholder"] as? String).flatMap { Bool($0) } ?? false,
-            shouldReturnPersistentReference: (options["persistentReference"] as? String).flatMap { Bool($0) } ?? false,
+            isHidden: (options["isHidden"] as? String).flatMap { Bool($0) },
+            isPlaceholder: (options["isPlaceholder"] as? String).flatMap { Bool($0) },
+            shouldReturnPersistentReference: (options["persistentReference"] as? String).flatMap { Bool($0) },
             authenticationUIBehavior: options["authenticationUIBehavior"] as? String
         )
 

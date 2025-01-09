@@ -39,13 +39,13 @@ class AppleOptions extends Options {
     this.label,
     this.description,
     this.comment,
-    this.isInvisible = false,
-    this.isNegative = false,
+    this.isInvisible,
+    this.isNegative,
     this.creationDate,
     this.lastModifiedDate,
     this.resultLimit,
     this.shouldReturnData = false,
-    this.shouldReturnPersistentReference = false,
+    this.shouldReturnPersistentReference,
     this.authenticationUIBehavior,
     this.accessControlSettings,
     this.usesDataProtectionKeychain = true,
@@ -87,12 +87,12 @@ class AppleOptions extends Options {
   /// `kSecAttrIsInvisible` (iOS/macOS): **Shared or Unique**.
   /// Indicates whether the keychain item is hidden from user-visible lists.
   /// Can apply to all items in a category (shared) or specific items (unique).
-  final bool isInvisible;
+  final bool? isInvisible;
 
   /// `kSecAttrIsNegative` (iOS/macOS): **Unique**.
   /// Indicates whether the item is a placeholder or a negative entry.
   /// Typically unique to individual keychain items.
-  final bool isNegative;
+  final bool? isNegative;
 
   /// `kSecAttrCreationDate` (iOS/macOS): **Unique**.
   /// The creation date of the keychain item. Automatically set by the system when an item is created.
@@ -115,7 +115,7 @@ class AppleOptions extends Options {
   /// `kSecReturnPersistentRef` (iOS/macOS): **Action-Specific**.
   /// Indicates whether to return a persistent reference to the keychain item.
   /// Used for persistent access across app sessions.
-  final bool shouldReturnPersistentReference;
+  final bool? shouldReturnPersistentReference;
 
   /// `kSecUseAuthenticationUI` (iOS/macOS): **Shared**.
   /// Controls how authentication UI is presented during secure operations.
@@ -143,13 +143,13 @@ class AppleOptions extends Options {
     if (description != null) 'description': description!,
     if (comment != null) 'comment': comment!,
     'synchronizable': '$synchronizable',
-    'isInvisible': '$isInvisible',
-    'isNegative': '$isNegative',
+    if (isInvisible != null) 'isInvisible': '$isInvisible',
+    if (isNegative != null) 'isNegative': '$isNegative',
     if (creationDate != null) 'creationDate': creationDate!.toIso8601String(),
     if (lastModifiedDate != null) 'lastModifiedDate': lastModifiedDate!.toIso8601String(),
     if (resultLimit != null) 'resultLimit': resultLimit!.toString(),
     'shouldReturnData': '$shouldReturnData',
-    'shouldReturnPersistentReference': '$shouldReturnPersistentReference',
+    if (shouldReturnPersistentReference != null) 'shouldReturnPersistentReference': '$shouldReturnPersistentReference',
     if (authenticationUIBehavior != null) 'authenticationUIBehavior': authenticationUIBehavior!,
     if (accessControlSettings != null) 'accessControlSettings': accessControlSettings!,
     'usesDataProtectionKeychain': '$usesDataProtectionKeychain',

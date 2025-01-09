@@ -243,6 +243,11 @@ class FlutterSecureStorage {
         var ref: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &ref)
 
+        // Return nil if nothing is found
+        if (status == errSecItemNotFound) {
+            return FlutterSecureStorageResponse(status: errSecSuccess, value: nil)
+        }
+        
         guard status == errSecSuccess else {
             return FlutterSecureStorageResponse(status: status, value: nil)
         }
@@ -266,6 +271,11 @@ class FlutterSecureStorage {
         let query = baseQuery(from: params)
         var ref: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &ref)
+        
+        // Return nil if nothing is found
+        if (status == errSecItemNotFound) {
+            return FlutterSecureStorageResponse(status: errSecSuccess, value: nil)
+        }
 
         guard status == errSecSuccess, let data = ref as? Data else {
             return FlutterSecureStorageResponse(status: status, value: nil)
@@ -300,6 +310,10 @@ class FlutterSecureStorage {
     internal func delete(params: KeychainQueryParameters) -> FlutterSecureStorageResponse {
         let query = baseQuery(from: params)
         let status = SecItemDelete(query as CFDictionary)
+        // Return nil if nothing is found
+        if (status == errSecItemNotFound) {
+            return FlutterSecureStorageResponse(status: errSecSuccess, value: nil)
+        }
         return FlutterSecureStorageResponse(status: status, value: nil)
     }
 
@@ -309,6 +323,10 @@ class FlutterSecureStorage {
         query[kSecMatchLimit] = kSecMatchLimitAll
 
         let status = SecItemDelete(query as CFDictionary)
+        // Return nil if nothing is found
+        if (status == errSecItemNotFound) {
+            return FlutterSecureStorageResponse(status: errSecSuccess, value: nil)
+        }
         return FlutterSecureStorageResponse(status: status, value: nil)
     }
     
