@@ -34,6 +34,11 @@ and a minimum flutter version of 3.19.0.
 [Platform Interface]
 - Migrated to new analyzer and clean-up code.
 
+## 9.2.4
+* [Android] Fix errors when building for release by upgrading Tink to 1.9.0.
+* [iOS] Fix delete and deleteAll when synchronizable is set.
+* [iOS] Update migration when value is saved while key already exists with different accessibility option.
+
 ## 9.2.3
 * [iOS] Fix for issue #711: The specified item already exists in the keychain.
 * [Linux] Fix json.dump with indentations.

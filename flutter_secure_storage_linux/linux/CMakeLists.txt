@@ -6,6 +6,8 @@ project(${PROJECT_NAME} LANGUAGES CXX)
 # not be changed
 set(PLUGIN_NAME "flutter_secure_storage_linux_plugin")
 
+add_definitions(-DAPPLICATION_ID="${APPLICATION_ID}")
+
 add_library(${PLUGIN_NAME} SHARED
   "flutter_secure_storage_linux_plugin.cc"
 )
