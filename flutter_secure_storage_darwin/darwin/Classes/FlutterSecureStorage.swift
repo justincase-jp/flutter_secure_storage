@@ -153,8 +153,8 @@ class FlutterSecureStorage {
         return responseWithoutSynchronizable.value != nil ? responseWithoutSynchronizable : readValue(synchronizable: true)
     }
 
-    internal func deleteAll(groupId: String?, accountName: String?, useDataProtectionKeyChain: Bool) -> FlutterSecureStorageResponse {
-        let keychainQuery = baseQuery(key: nil, groupId: groupId, accountName: accountName, synchronizable: nil, accessibility: nil, useDataProtectionKeyChain: useDataProtectionKeyChain, returnData: nil)
+    internal func deleteAll(groupId: String?, accountName: String?, synchronizable: Bool?, accessibility: String?, useDataProtectionKeyChain: Bool) -> FlutterSecureStorageResponse {
+        let keychainQuery = baseQuery(key: nil, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: accessibility, useDataProtectionKeyChain: useDataProtectionKeyChain, returnData: nil)
         let status = SecItemDelete(keychainQuery as CFDictionary)
 
         if (status == errSecItemNotFound) {
@@ -165,8 +165,8 @@ class FlutterSecureStorage {
         return FlutterSecureStorageResponse(status: status, value: nil)
     }
 
-    internal func delete(key: String, groupId: String?, accountName: String?, useDataProtectionKeyChain: Bool) -> FlutterSecureStorageResponse {
-        let keychainQuery = baseQuery(key: key, groupId: groupId, accountName: accountName, synchronizable: nil, accessibility: nil, useDataProtectionKeyChain: useDataProtectionKeyChain, returnData: true)
+    internal func delete(key: String, groupId: String?, accountName: String?, synchronizable: Bool?, accessibility: String?, useDataProtectionKeyChain: Bool) -> FlutterSecureStorageResponse {
+        let keychainQuery = baseQuery(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: accessibility, useDataProtectionKeyChain: useDataProtectionKeyChain, returnData: true)
         let status = SecItemDelete(keychainQuery as CFDictionary)
 
         // Return nil if the key is not found
@@ -208,10 +208,16 @@ class FlutterSecureStorage {
             if status == errSecSuccess {
                 return FlutterSecureStorageResponse(status: status, value: nil)
             }
-
+            
             // Update failed, possibly due to different kSecAttrAccessible.
-            // Delete the entry and create a new one in the next step.
-            delete(key: key, groupId: groupId, accountName: accountName, useDataProtectionKeyChain: useDataProtectionKeyChain)
+            // Delete the entry for all possible kSecAttrAccessible and create
+            // a new one with the provided kSecAttrAccessible in the next step.
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: nil)
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "passcode")
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "unlocked")
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "unlocked_this_device")
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "first_unlock")
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "first_unlock_this_device")
         }
 
         // Entry does not exist or was deleted, create a new entry.
