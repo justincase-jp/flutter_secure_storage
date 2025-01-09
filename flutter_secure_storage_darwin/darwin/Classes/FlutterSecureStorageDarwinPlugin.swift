@@ -127,14 +127,14 @@ public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterS
             return
         }
 
-        let response = flutterSecureStorageManager.delete(key: values.key!, groupId: values.groupId, accountName: values.accountName, useDataProtectionKeyChain: values.useDataProtectionKeyChain)
+        let response = flutterSecureStorageManager.delete(key: values.key!, groupId: values.groupId, accountName: values.accountName, synchronizable: values.synchronizable, accessibility: values.accessibility, useDataProtectionKeyChain: values.useDataProtectionKeyChain)
 
         handleResponse(response, result)
     }
 
     private func deleteAll(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
         let values = parseCall(call)
-        let response = flutterSecureStorageManager.deleteAll(groupId: values.groupId, accountName: values.accountName, useDataProtectionKeyChain: values.useDataProtectionKeyChain)
+        let response = flutterSecureStorageManager.deleteAll(groupId: values.groupId, accountName: values.accountName, synchronizable: values.synchronizable, accessibility: values.accessibility, useDataProtectionKeyChain: values.useDataProtectionKeyChain)
 
         handleResponse(response, result)
     }

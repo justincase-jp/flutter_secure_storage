@@ -212,12 +212,12 @@ class FlutterSecureStorage {
             // Update failed, possibly due to different kSecAttrAccessible.
             // Delete the entry for all possible kSecAttrAccessible and create
             // a new one with the provided kSecAttrAccessible in the next step.
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: nil)
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "passcode")
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "unlocked")
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "unlocked_this_device")
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "first_unlock")
-            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "first_unlock_this_device")
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: nil, useDataProtectionKeyChain: useDataProtectionKeyChain)
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "passcode", useDataProtectionKeyChain: useDataProtectionKeyChain)
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "unlocked", useDataProtectionKeyChain: useDataProtectionKeyChain)
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "unlocked_this_device", useDataProtectionKeyChain: useDataProtectionKeyChain)
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "first_unlock", useDataProtectionKeyChain: useDataProtectionKeyChain)
+            delete(key: key, groupId: groupId, accountName: accountName, synchronizable: synchronizable, accessibility: "first_unlock_this_device", useDataProtectionKeyChain: useDataProtectionKeyChain)
         }
 
         // Entry does not exist or was deleted, create a new entry.
