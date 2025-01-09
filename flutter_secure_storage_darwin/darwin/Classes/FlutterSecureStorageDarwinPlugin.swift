@@ -1,19 +1,14 @@
 //
 //  FlutterSecureStorageDarwinPlugin.swift
-//  flutter_secure_storage
-//
-//  Created by Julian Steenbakker on 22/08/2022.
 //
 
 #if os(iOS)
-  import Flutter
-  import UIKit
+import Flutter
+import UIKit
 #else
-  import AppKit
-  import FlutterMacOS
+import AppKit
+import FlutterMacOS
 #endif
-
-
 
 public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
 
@@ -23,11 +18,11 @@ public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterS
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         #if os(iOS)
-                let messenger = registrar.messenger()
+        let messenger = registrar.messenger()
         #else
-                let messenger = registrar.messenger
+        let messenger = registrar.messenger
         #endif
-        
+
         let channel = FlutterMethodChannel(name: "plugins.it_nomads.com/flutter_secure_storage", binaryMessenger: messenger)
         let eventChannel = FlutterEventChannel(name: "plugins.it_nomads.com/flutter_secure_storage/events", binaryMessenger: messenger)
         let instance = FlutterSecureStorageDarwinPlugin()
@@ -44,7 +39,7 @@ public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterS
         }
 
         serialExecutionQueue.async {
-            switch (call.method) {
+            switch call.method {
             case "read":
                 self.read(call, handleResult)
             case "write":
@@ -58,17 +53,16 @@ public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterS
             case "containsKey":
                 self.containsKey(call, handleResult)
             case "isProtectedDataAvailable":
-                // UIApplication is not thread safe
                 DispatchQueue.main.async {
-                #if os(iOS)
+                    #if os(iOS)
                     result(UIApplication.shared.isProtectedDataAvailable)
-                #else
+                    #else
                     if #available(macOS 12.0, *) {
                         result(NSApplication.shared.isProtectedDataAvailable)
                     } else {
                         result(true)
                     }
-                #endif
+                    #endif
                 }
             default:
                 handleResult(FlutterMethodNotImplemented)
@@ -88,151 +82,110 @@ public class FlutterSecureStorageDarwinPlugin: NSObject, FlutterPlugin, FlutterS
     }
 
     private func read(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
-        let values = parseCall(call)
-        if (values.key == nil) {
-            result(FlutterError.init(code: "Missing Parameter", message: "write requires key parameter", details: nil))
+        let (params, _) = parseCall(call)
+        guard let key = params.key else {
+            result(FlutterError(code: "Missing Parameter", message: "read requires key parameter", details: nil))
             return
         }
 
-        let response = flutterSecureStorageManager.read(key: values.key!, groupId: values.groupId, accountName: values.accountName, useDataProtectionKeyChain: values.useDataProtectionKeyChain)
+        let response = flutterSecureStorageManager.read(params: params)
         handleResponse(response, result)
     }
 
     private func write(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
-        if (!((call.arguments as! [String : Any?])["value"] is String)){
-            result(FlutterError.init(code: "Invalid Parameter", message: "key parameter must be String", details: nil))
-            return;
-        }
-
-        let values = parseCall(call)
-        if (values.key == nil) {
-            result(FlutterError.init(code: "Missing Parameter", message: "write requires key parameter", details: nil))
+        let (params, value) = parseCall(call)
+        guard let _ = params.key, let value = value else {
+            result(FlutterError(code: "Missing Parameter", message: "write requires key and value parameters", details: nil))
             return
         }
 
-        if (values.value == nil) {
-            result(FlutterError.init(code: "Missing Parameter", message: "write requires value parameter", details: nil))
-            return
-        }
-
-        let response = flutterSecureStorageManager.write(key: values.key!, value: values.value!, groupId: values.groupId, accountName: values.accountName, synchronizable: values.synchronizable, accessibility: values.accessibility, useDataProtectionKeyChain: values.useDataProtectionKeyChain)
-
+        let response = flutterSecureStorageManager.write(params: params, value: value)
         handleResponse(response, result)
     }
 
     private func delete(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
-        let values = parseCall(call)
-        if (values.key == nil) {
-            result(FlutterError.init(code: "Missing Parameter", message: "delete requires key parameter", details: nil))
+        let (params, value) = parseCall(call)
+        guard let account = params.key else {
+            result(FlutterError(code: "Missing Parameter", message: "delete requires key parameter", details: nil))
             return
         }
 
-        let response = flutterSecureStorageManager.delete(key: values.key!, groupId: values.groupId, accountName: values.accountName, synchronizable: values.synchronizable, accessibility: values.accessibility, useDataProtectionKeyChain: values.useDataProtectionKeyChain)
-
+        let response = flutterSecureStorageManager.delete(params: params)
         handleResponse(response, result)
     }
 
     private func deleteAll(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
-        let values = parseCall(call)
-        let response = flutterSecureStorageManager.deleteAll(groupId: values.groupId, accountName: values.accountName, synchronizable: values.synchronizable, accessibility: values.accessibility, useDataProtectionKeyChain: values.useDataProtectionKeyChain)
-
+        let (params, value) = parseCall(call)
+        let response = flutterSecureStorageManager.deleteAll(params: params)
         handleResponse(response, result)
     }
 
     private func readAll(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
-        let values = parseCall(call)
-        let response = flutterSecureStorageManager.readAll(groupId: values.groupId, accountName: values.accountName, synchronizable: values.synchronizable, accessibility: values.accessibility, useDataProtectionKeyChain: values.useDataProtectionKeyChain)
-
+        let (params, value) = parseCall(call)
+        let response = flutterSecureStorageManager.readAll(params: params)
         handleResponse(response, result)
     }
 
     private func containsKey(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
-        let values = parseCall(call)
-        if (values.key == nil) {
-            result(FlutterError.init(code: "Missing Parameter", message: "containsKey requires key parameter", details: nil))
+        let (params, value) = parseCall(call)
+        guard let account = params.key else {
+            result(FlutterError(code: "Missing Parameter", message: "containsKey requires key parameter", details: nil))
+            return
         }
 
-        let response = flutterSecureStorageManager.containsKey(key: values.key!, groupId: values.groupId, accountName: values.accountName, useDataProtectionKeyChain: values.useDataProtectionKeyChain)
+        let response = flutterSecureStorageManager.containsKey(params: params)
 
         switch response {
         case .success(let exists):
             result(exists)
-            break;
-        case .failure(let err):
-            var errorMessage = ""
-
-            if #available(iOS 11.3, *) {
-                if let errMsg = SecCopyErrorMessageString(err.status, nil) {
-                    errorMessage = "Code: \(err.status), Message: \(errMsg)"
-                } else {
-                    errorMessage = "Unknown security result code: \(err.status)"
-                }
-            } else {
-                errorMessage = "Unknown security result code: \(err.status)"
-            }
-            result(FlutterError.init(code: "Unexpected security result code", message: errorMessage, details: err.status))
-            break;
+        case .failure(let error):
+            let errorMessage = SecCopyErrorMessageString(error.status, nil) ?? "Unknown security result code: \(error.status)" as CFString
+            result(FlutterError(code: "Unexpected security result code", message: errorMessage as String, details: error.status))
         }
     }
 
-    private func parseCall(_ call: FlutterMethodCall) -> FlutterSecureStorageRequest {
-        let arguments = call.arguments as! [String : Any?]
-        let options = arguments["options"] as! [String : Any?]
+    private func parseCall(_ call: FlutterMethodCall) -> (KeychainQueryParameters, String?) {
+        let arguments = call.arguments as! [String: Any?]
+        let options = arguments["options"] as? [String: Any?] ?? [:]
 
-        let accountName = options["accountName"] as? String
-        let groupId = options["groupId"] as? String
-        let synchronizableString = options["synchronizable"] as? String
-        let useDataProtectionKeyChainString = options["useDataProtectionKeyChain"] as? String
-
-        let synchronizable: Bool = synchronizableString != nil ? Bool(synchronizableString!)! : false
-        let useDataProtectionKeyChain: Bool = useDataProtectionKeyChainString != nil ? Bool(useDataProtectionKeyChainString!)! : true
-
-
-        let key = arguments["key"] as? String
-        let accessibility = options["accessibility"] as? String
         let value = arguments["value"] as? String
 
-        return FlutterSecureStorageRequest(
-            accountName: accountName,
-            groupId: groupId,
-            synchronizable: synchronizable,
-            useDataProtectionKeyChain: useDataProtectionKeyChain,
-            accessibility: accessibility,
-            key: key,
-            value: value
+        let parameters = KeychainQueryParameters(
+            key: arguments["key"] as? String,
+            accessGroup: options["groupId"] as? String,
+            service: options["accountName"] as? String,
+            isSynchronizable: (options["synchronizable"] as? String).flatMap { Bool($0) } ?? false,
+            accessibilityLevel: options["accessibility"] as? String,
+            usesDataProtectionKeychain: (options["useDataProtectionKeyChain"] as? String).flatMap { Bool($0) } ?? true,
+            shouldReturnData: true, // Default behavior for most operations.
+            itemLabel: options["label"] as? String,
+            itemDescription: options["description"] as? String,
+            itemComment: options["comment"] as? String,
+            isHidden: (options["isHidden"] as? String).flatMap { Bool($0) } ?? false,
+            isPlaceholder: (options["isPlaceholder"] as? String).flatMap { Bool($0) } ?? false,
+            shouldReturnPersistentReference: (options["persistentReference"] as? String).flatMap { Bool($0) } ?? false,
+            authenticationUIBehavior: options["authenticationUIBehavior"] as? String
         )
+
+        return (parameters, value)
     }
 
     private func handleResponse(_ response: FlutterSecureStorageResponse, _ result: @escaping FlutterResult) {
-        if let status = response.status {
-            if (status == noErr) {
-                result(response.value)
-            } else {
-                var errorMessage = ""
-
-                if #available(iOS 11.3, *) {
-                    if let errMsg = SecCopyErrorMessageString(status, nil) {
-                        errorMessage = "Code: \(status), Message: \(errMsg)"
-                    } else {
-                        errorMessage = "Unknown security result code: \(status)"
-                    }
+        let status = response.status
+        if status != noErr {
+            let errorMessage: String
+            if #available(iOS 11.3, *) {
+                if let errMsg = SecCopyErrorMessageString(status, nil) {
+                    errorMessage = "Code: \(status), Message: \(errMsg)"
                 } else {
                     errorMessage = "Unknown security result code: \(status)"
                 }
-                result(FlutterError.init(code: "Unexpected security result code", message: errorMessage, details: status))
+            } else {
+                errorMessage = "Unknown security result code: \(status)"
             }
+            result(FlutterError(code: "Unexpected security result code", message: errorMessage as String, details: status))
         } else {
             result(response.value)
         }
-    }
-
-    struct FlutterSecureStorageRequest {
-        var accountName: String?
-        var groupId: String?
-        var synchronizable: Bool?
-        var useDataProtectionKeyChain: Bool
-        var accessibility: String?
-        var key: String?
-        var value: String?
     }
 }

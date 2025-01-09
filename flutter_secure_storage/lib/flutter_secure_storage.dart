@@ -9,9 +9,7 @@ import 'package:flutter_secure_storage_platform_interface/flutter_secure_storage
 
 part './options/android_options.dart';
 part './options/apple_options.dart';
-part './options/ios_options.dart';
 part './options/linux_options.dart';
-part './options/macos_options.dart';
 part './options/web_options.dart';
 part './options/windows_options.dart';
 
@@ -33,18 +31,18 @@ class FlutterSecureStorage {
   /// [webOptions] - Options specific to Web.
   /// [mOptions] - Options specific to macOS.
   const FlutterSecureStorage({
-    this.iOptions = IOSOptions.defaultOptions,
+    this.iOptions = AppleOptions.defaultOptions,
     this.aOptions = AndroidOptions.defaultOptions,
     this.lOptions = LinuxOptions.defaultOptions,
     this.wOptions = WindowsOptions.defaultOptions,
     this.webOptions = WebOptions.defaultOptions,
-    this.mOptions = MacOsOptions.defaultOptions,
+    this.mOptions = AppleOptions.defaultOptions,
   });
 
   /// Platform-specific options for iOS.
   ///
   /// Configures secure storage behavior for iOS devices.
-  final IOSOptions iOptions;
+  final AppleOptions iOptions;
 
   /// Platform-specific options for Android.
   ///
@@ -69,7 +67,7 @@ class FlutterSecureStorage {
   /// Platform-specific options for macOS.
   ///
   /// Configures secure storage behavior for macOS devices.
-  final MacOsOptions mOptions;
+  final AppleOptions mOptions;
 
   static const _unsupportedPlatform = 'unsupported_platform';
 
@@ -129,11 +127,11 @@ class FlutterSecureStorage {
   Future<void> write({
     required String key,
     required String? value,
-    IOSOptions? iOptions,
+    AppleOptions? iOptions,
     AndroidOptions? aOptions,
     LinuxOptions? lOptions,
     WebOptions? webOptions,
-    MacOsOptions? mOptions,
+    AppleOptions? mOptions,
     WindowsOptions? wOptions,
   }) async {
     if (value == null) {
@@ -179,11 +177,11 @@ class FlutterSecureStorage {
   /// Can throw a [PlatformException].
   Future<String?> read({
     required String key,
-    IOSOptions? iOptions,
+    AppleOptions? iOptions,
     AndroidOptions? aOptions,
     LinuxOptions? lOptions,
     WebOptions? webOptions,
-    MacOsOptions? mOptions,
+    AppleOptions? mOptions,
     WindowsOptions? wOptions,
   }) =>
       _platform.read(
@@ -210,11 +208,11 @@ class FlutterSecureStorage {
   /// Can throw a [PlatformException].
   Future<bool> containsKey({
     required String key,
-    IOSOptions? iOptions,
+    AppleOptions? iOptions,
     AndroidOptions? aOptions,
     LinuxOptions? lOptions,
     WebOptions? webOptions,
-    MacOsOptions? mOptions,
+    AppleOptions? mOptions,
     WindowsOptions? wOptions,
   }) =>
       _platform.containsKey(
@@ -243,11 +241,11 @@ class FlutterSecureStorage {
   /// Can throw a [PlatformException].
   Future<void> delete({
     required String key,
-    IOSOptions? iOptions,
+    AppleOptions? iOptions,
     AndroidOptions? aOptions,
     LinuxOptions? lOptions,
     WebOptions? webOptions,
-    MacOsOptions? mOptions,
+    AppleOptions? mOptions,
     WindowsOptions? wOptions,
   }) async {
     await _platform.delete(
@@ -286,11 +284,11 @@ class FlutterSecureStorage {
   /// [wOptions] optional Windows options
   /// Can throw a [PlatformException].
   Future<Map<String, String>> readAll({
-    IOSOptions? iOptions,
+    AppleOptions? iOptions,
     AndroidOptions? aOptions,
     LinuxOptions? lOptions,
     WebOptions? webOptions,
-    MacOsOptions? mOptions,
+    AppleOptions? mOptions,
     WindowsOptions? wOptions,
   }) =>
       _platform.readAll(
@@ -314,11 +312,11 @@ class FlutterSecureStorage {
   /// [wOptions] optional Windows options
   /// Can throw a [PlatformException].
   Future<void> deleteAll({
-    IOSOptions? iOptions,
+    AppleOptions? iOptions,
     AndroidOptions? aOptions,
     LinuxOptions? lOptions,
     WebOptions? webOptions,
-    MacOsOptions? mOptions,
+    AppleOptions? mOptions,
     WindowsOptions? wOptions,
   }) async {
     await _platform.deleteAll(
@@ -341,11 +339,11 @@ class FlutterSecureStorage {
 
   /// Select correct options based on current platform
   Map<String, String> _selectOptions(
-    IOSOptions? iOptions,
+    AppleOptions? iOptions,
     AndroidOptions? aOptions,
     LinuxOptions? lOptions,
     WebOptions? webOptions,
-    MacOsOptions? mOptions,
+    AppleOptions? mOptions,
     WindowsOptions? wOptions,
   ) {
     if (kIsWeb) {

@@ -50,7 +50,7 @@ class HomePageState extends State<HomePage> {
 
   Future<void> _readAll() async {
     final all = await _storage.readAll(
-      iOptions: _getIOSOptions(),
+      iOptions: _getAppleOptions(),
       aOptions: _getAndroidOptions(),
     );
     setState(() {
@@ -66,7 +66,7 @@ class HomePageState extends State<HomePage> {
 
   Future<void> _deleteAll() async {
     await _storage.deleteAll(
-      iOptions: _getIOSOptions(),
+      iOptions: _getAppleOptions(),
       aOptions: _getAndroidOptions(),
     );
     await _readAll();
@@ -88,13 +88,13 @@ class HomePageState extends State<HomePage> {
     await _storage.write(
       key: DateTime.timestamp().microsecondsSinceEpoch.toString(),
       value: _randomValue(),
-      iOptions: _getIOSOptions(),
+      iOptions: _getAppleOptions(),
       aOptions: _getAndroidOptions(),
     );
     await _readAll();
   }
 
-  IOSOptions _getIOSOptions() => IOSOptions(
+  AppleOptions _getAppleOptions() => AppleOptions(
         accountName: _getAccountName(),
       );
 
@@ -214,7 +214,7 @@ class HomePageState extends State<HomePage> {
       case _ItemActions.delete:
         await _storage.delete(
           key: item.key,
-          iOptions: _getIOSOptions(),
+          iOptions: _getAppleOptions(),
           aOptions: _getAndroidOptions(),
         );
         await _readAll();
@@ -228,7 +228,7 @@ class HomePageState extends State<HomePage> {
           await _storage.write(
             key: item.key,
             value: result,
-            iOptions: _getIOSOptions(),
+            iOptions: _getAppleOptions(),
             aOptions: _getAndroidOptions(),
           );
           await _readAll();
