@@ -91,7 +91,7 @@ jobs:
       - uses: futureware-tech/simulator-action@v4
         with:
           os: iOS
-          os_version: 18.2
+          os_version: ">=18.1"
           model: "iPhone 16"
       - name: Run Flutter Integration tests
         working-directory: flutter_secure_storage/example
