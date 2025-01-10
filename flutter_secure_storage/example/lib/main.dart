@@ -25,34 +25,47 @@ class HomePage extends StatefulWidget {
 /// The `HomePageState` class represents the mutable state for the `HomePage`
 /// widget. It manages the state and behavior of the user interface.
 class HomePageState extends State<HomePage> {
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  late FlutterSecureStorage _storage;
+
   final TextEditingController _accountNameController =
-      TextEditingController(text: 'flutter_secure_storage_service');
+      TextEditingController(text: AppleOptions.defaultAccountName);
 
   final List<_SecItem> _items = [];
+
+  void _initializeFlutterSecureStorage(String accountName) {
+    _storage = FlutterSecureStorage(
+      iOptions: IOSOptions(accountName: accountName),
+    );
+  }
+
+  void _updateAccountName() {
+    if (_accountNameController.text.isEmpty) return;
+
+    _storage = FlutterSecureStorage(
+      iOptions: IOSOptions(accountName: _accountNameController.text),
+    );
+    _readAll();
+  }
 
   @override
   void initState() {
     super.initState();
-
-    _accountNameController.addListener(_readAll);
+    _initializeFlutterSecureStorage(AppleOptions.defaultAccountName);
+    _accountNameController.addListener(_updateAccountName);
     _readAll();
   }
 
   @override
   void dispose() {
     _accountNameController
-      ..removeListener(_readAll)
+      ..removeListener(_updateAccountName)
       ..dispose();
 
     super.dispose();
   }
 
   Future<void> _readAll() async {
-    final all = await _storage.readAll(
-      iOptions: _getIOSOptions(),
-      aOptions: _getAndroidOptions(),
-    );
+    final all = await _storage.readAll();
     setState(() {
       _items
         ..clear()
@@ -65,10 +78,7 @@ class HomePageState extends State<HomePage> {
   }
 
   Future<void> _deleteAll() async {
-    await _storage.deleteAll(
-      iOptions: _getIOSOptions(),
-      aOptions: _getAndroidOptions(),
-    );
+    await _storage.deleteAll();
     await _readAll();
   }
 
@@ -88,20 +98,9 @@ class HomePageState extends State<HomePage> {
     await _storage.write(
       key: DateTime.timestamp().microsecondsSinceEpoch.toString(),
       value: _randomValue(),
-      iOptions: _getIOSOptions(),
-      aOptions: _getAndroidOptions(),
     );
     await _readAll();
   }
-
-  IOSOptions _getIOSOptions() => IOSOptions(
-        accountName: _getAccountName(),
-      );
-
-  AndroidOptions _getAndroidOptions() => AndroidOptions.defaultOptions;
-
-  String? _getAccountName() =>
-      _accountNameController.text.isEmpty ? null : _accountNameController.text;
 
   @override
   Widget build(BuildContext context) {
@@ -214,8 +213,6 @@ class HomePageState extends State<HomePage> {
       case _ItemActions.delete:
         await _storage.delete(
           key: item.key,
-          iOptions: _getIOSOptions(),
-          aOptions: _getAndroidOptions(),
         );
         await _readAll();
       case _ItemActions.edit:
@@ -228,8 +225,6 @@ class HomePageState extends State<HomePage> {
           await _storage.write(
             key: item.key,
             value: result,
-            iOptions: _getIOSOptions(),
-            aOptions: _getAndroidOptions(),
           );
           await _readAll();
         }
@@ -245,8 +240,7 @@ class HomePageState extends State<HomePage> {
         );
       case _ItemActions.read:
         final key = await _displayTextInputDialog(context, item.key);
-        final result =
-            await _storage.read(key: key, aOptions: _getAndroidOptions());
+        final result = await _storage.read(key: key);
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
