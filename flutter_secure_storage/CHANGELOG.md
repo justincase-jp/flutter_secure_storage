@@ -1,3 +1,9 @@
+## 10.0.0-beta.4
+* [Apple] Merged ios and macos implementation into a new package flutter_secure_storage_darwin
+* [Apple] Refactored code and added missing options
+* [Apple] Added support for swift package manager
+* [Web] Update flutter_secure_storage_platform_interface to be compatible with WASM.
+
 ## 10.0.0-beta.3
 * [iOS] Fix delete and deleteAll when synchronizable is set.
 * [iOS] Update migration when value is saved while key already exists with different accessibility option. 
