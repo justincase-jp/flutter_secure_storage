@@ -12,6 +12,8 @@ part './options/apple_options.dart';
 part './options/linux_options.dart';
 part './options/web_options.dart';
 part './options/windows_options.dart';
+part './options/ios_options.dart';
+part './options/macos_options.dart';
 
 final Map<String, List<ValueChanged<String?>>> _listeners = {};
 
@@ -31,18 +33,18 @@ class FlutterSecureStorage {
   /// [webOptions] - Options specific to Web.
   /// [mOptions] - Options specific to macOS.
   const FlutterSecureStorage({
-    this.iOptions = AppleOptions.defaultOptions,
+    this.iOptions = IOSOptions.defaultOptions,
     this.aOptions = AndroidOptions.defaultOptions,
     this.lOptions = LinuxOptions.defaultOptions,
     this.wOptions = WindowsOptions.defaultOptions,
     this.webOptions = WebOptions.defaultOptions,
-    this.mOptions = AppleOptions.defaultOptions,
+    this.mOptions = MacOsOptions.defaultOptions,
   });
 
   /// Platform-specific options for iOS.
   ///
   /// Configures secure storage behavior for iOS devices.
-  final AppleOptions iOptions;
+  final IOSOptions iOptions;
 
   /// Platform-specific options for Android.
   ///
