@@ -1,7 +1,6 @@
-import 'dart:io' show Platform;
 import 'dart:math' show Random;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -35,15 +34,14 @@ class HomePageState extends State<HomePage> {
   void _initializeFlutterSecureStorage(String accountName) {
     _storage = FlutterSecureStorage(
       iOptions: IOSOptions(accountName: accountName),
+      mOptions: MacOsOptions(accountName: accountName),
     );
   }
 
   void _updateAccountName() {
     if (_accountNameController.text.isEmpty) return;
 
-    _storage = FlutterSecureStorage(
-      iOptions: IOSOptions(accountName: _accountNameController.text),
-    );
+    _initializeFlutterSecureStorage(_accountNameController.text);
     _readAll();
   }
 
@@ -140,7 +138,9 @@ class HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          if (!kIsWeb && Platform.isIOS)
+          if (!kIsWeb &&
+              (defaultTargetPlatform == TargetPlatform.iOS ||
+                  defaultTargetPlatform == TargetPlatform.macOS))
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TextFormField(

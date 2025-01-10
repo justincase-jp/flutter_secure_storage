@@ -1,11 +1,11 @@
-# flutter_secure_storage_macos
+# flutter_secure_storage_darwin
 
-This is the platform-specific implementation of `flutter_secure_storage` for macOS.
+This is the platform-specific implementation of `flutter_secure_storage` for iOS macOS.
 
 ## Features
 
 - Secure storage using the Keychain API.
-- Fully integrated with macOS security features.
+- Fully integrated with iOS and macOS security features.
 
 ## Installation
 
@@ -13,7 +13,7 @@ Add the dependency in your `pubspec.yaml` and run `flutter pub get`.
 
 ## Configuration
 
-You also need to add Keychain Sharing as capability to your macOS runner. To achieve this, please add the following in *both* your `macos/Runner/DebugProfile.entitlements` *and* `macos/Runner/Release.entitlements`.
+You also need to add Keychain Sharing as capability to your iOS or macOS runner. To achieve this, please add the following in *both* your `(ios/macos)/Runner/DebugProfile.entitlements` *and* `(ios/macos)/Runner/Release.entitlements`.
 
 ```
 <key>keychain-access-groups</key>
