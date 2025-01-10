@@ -47,7 +47,6 @@ abstract class AppleOptions extends Options {
     this.creationDate,
     this.lastModifiedDate,
     this.resultLimit,
-    this.shouldReturnData = false,
     this.shouldReturnPersistentReference,
     this.authenticationUIBehavior,
     this.accessControlSettings,
@@ -121,11 +120,6 @@ abstract class AppleOptions extends Options {
   /// For example, `1` for a single result, or `all` for all matching results.
   final int? resultLimit;
 
-  /// `kSecReturnData`: **Action-Specific**.
-  /// Indicates whether the item's data should be returned in queries.
-  /// Relevant only for read or query actions.
-  final bool shouldReturnData;
-
   /// `kSecReturnPersistentRef`: **Action-Specific**.
   /// Indicates whether to return a persistent reference to the keychain item.
   /// Used for persistent access across app sessions.
@@ -158,7 +152,6 @@ abstract class AppleOptions extends Options {
         if (lastModifiedDate != null)
           'lastModifiedDate': lastModifiedDate!.toIso8601String(),
         if (resultLimit != null) 'resultLimit': resultLimit!.toString(),
-        'shouldReturnData': '$shouldReturnData',
         if (shouldReturnPersistentReference != null)
           'shouldReturnPersistentReference': '$shouldReturnPersistentReference',
         if (authenticationUIBehavior != null)

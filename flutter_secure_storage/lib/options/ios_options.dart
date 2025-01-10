@@ -19,7 +19,6 @@ class IOSOptions extends AppleOptions {
     super.creationDate,
     super.lastModifiedDate,
     super.resultLimit,
-    super.shouldReturnData,
     super.shouldReturnPersistentReference,
     super.authenticationUIBehavior,
     super.accessControlSettings,
