@@ -33,8 +33,8 @@ If you are configuring this value through XCode then the string you set in the K
 
 ## Usage
 
-Refer to the main [flutter_secure_storage README](../README.md) for common usage instructions.
+Refer to the main [flutter_secure_storage README](../../README.md) for common usage instructions.
 
 ## License
 
-This project is licensed under the BSD 3 License. See the [LICENSE](../LICENSE) file for details.
+This project is licensed under the BSD 3 License. See the [LICENSE](../../LICENSE) file for details.
