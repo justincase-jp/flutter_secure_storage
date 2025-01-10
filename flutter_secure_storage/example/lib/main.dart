@@ -34,7 +34,7 @@ class HomePageState extends State<HomePage> {
   void _initializeFlutterSecureStorage(String accountName) {
     _storage = FlutterSecureStorage(
       iOptions: IOSOptions(accountName: accountName),
-      mOptions: MacOsOptions(accountName: accountName)
+      mOptions: MacOsOptions(accountName: accountName),
     );
   }
 
@@ -138,8 +138,9 @@ class HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          if (!kIsWeb && (defaultTargetPlatform == TargetPlatform.iOS ||
-              defaultTargetPlatform == TargetPlatform.macOS))
+          if (!kIsWeb &&
+              (defaultTargetPlatform == TargetPlatform.iOS ||
+                  defaultTargetPlatform == TargetPlatform.macOS))
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TextFormField(
