@@ -319,9 +319,7 @@ class FlutterSecureStorage {
 
     /// Deletes all items matching the query parameters.
     internal func deleteAll(params: KeychainQueryParameters) -> FlutterSecureStorageResponse {
-        var query = baseQuery(from: params)
-        query[kSecMatchLimit] = kSecMatchLimitAll
-
+        let query = baseQuery(from: params)
         let status = SecItemDelete(query as CFDictionary)
         // Return nil if nothing is found
         if (status == errSecItemNotFound) {
