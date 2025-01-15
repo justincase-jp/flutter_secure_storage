@@ -172,16 +172,6 @@ class FlutterSecureStorage {
     }
     
     private func validateQueryParameters(params: KeychainQueryParameters) throws {
-        // Synchronizable checks
-        if params.isSynchronizable == true {
-            if params.accessGroup != nil {
-                throw OSSecError(status: errSecParam, message: "Cannot use kSecAttrSynchronizable with kSecAttrAccessGroup.")
-            }
-//            if let itemClass = params.service, !(itemClass == "kSecClassGenericPassword" || itemClass == "kSecClassInternetPassword") {
-//                throw OSSecError(status: errSecParam, message: "kSecAttrSynchronizable is only supported for passwords.")
-//            }
-        }
-
         // Accessibility and access control
         if params.accessibilityLevel != nil, params.accessControlSettings != nil {
             throw OSSecError(status: errSecParam, message: "Cannot use kSecAttrAccessible and kSecAttrAccessControl together.")
