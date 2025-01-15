@@ -31,51 +31,45 @@ public class FlutterSecureStorage {
 
     private String sharedPreferencesName = DEFAULT_PREF_NAME;
     private String preferencesKeyPrefix = DEFAULT_KEY_PREFIX;
-    private SharedPreferences encryptedPreferences;
+    private final SharedPreferences encryptedPreferences;
 
-    public FlutterSecureStorage(Context context, Map<String, Object> options) {
+    public FlutterSecureStorage(Context context, Map<String, Object> options) throws GeneralSecurityException, IOException {
         this.applicationContext = context.getApplicationContext();
         this.options = options;
         ensureOptions();
-        getEncryptedSharedPreferences();
+        encryptedPreferences = getEncryptedSharedPreferences();
     }
 
     public boolean containsKey(String key) {
-        SharedPreferences preferences = getEncryptedSharedPreferences();
-        return preferences != null && preferences.contains(addPrefixToKey(key));
+        return encryptedPreferences != null && encryptedPreferences.contains(addPrefixToKey(key));
     }
 
     public String read(String key) {
-        SharedPreferences preferences = getEncryptedSharedPreferences();
-        return preferences != null ? preferences.getString(addPrefixToKey(key), null) : null;
+        return encryptedPreferences != null ? encryptedPreferences.getString(addPrefixToKey(key), null) : null;
     }
 
     public void write(String key, String value) {
-        SharedPreferences preferences = getEncryptedSharedPreferences();
-        if (preferences != null) {
-            preferences.edit().putString(addPrefixToKey(key), value).apply();
+        if (encryptedPreferences != null) {
+            encryptedPreferences.edit().putString(addPrefixToKey(key), value).apply();
         }
     }
 
     public void delete(String key) {
-        SharedPreferences preferences = getEncryptedSharedPreferences();
-        if (preferences != null) {
-            preferences.edit().remove(addPrefixToKey(key)).apply();
+        if (encryptedPreferences != null) {
+            encryptedPreferences.edit().remove(addPrefixToKey(key)).apply();
         }
     }
 
     public void deleteAll() {
-        SharedPreferences preferences = getEncryptedSharedPreferences();
-        if (preferences != null) {
-            preferences.edit().clear().apply();
+        if (encryptedPreferences != null) {
+            encryptedPreferences.edit().clear().apply();
         }
     }
 
     public Map<String, String> readAll() {
-        SharedPreferences preferences = getEncryptedSharedPreferences();
         Map<String, String> result = new HashMap<>();
-        if (preferences != null) {
-            Map<String, ?> allEntries = preferences.getAll();
+        if (encryptedPreferences != null) {
+            Map<String, ?> allEntries = encryptedPreferences.getAll();
             for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
                 String key = entry.getKey();
                 Object value = entry.getValue();
@@ -102,18 +96,21 @@ public class FlutterSecureStorage {
                 : DEFAULT_KEY_PREFIX;
     }
 
-    private SharedPreferences getEncryptedSharedPreferences() {
-        if (encryptedPreferences == null) {
-            try {
-                encryptedPreferences = initializeEncryptedSharedPreferencesManager(applicationContext);
-                migrateToEncryptedPreferences(encryptedPreferences);
-            } catch (Exception e) {
-                Log.e(TAG, "EncryptedSharedPreferences initialization failed", e);
-            }
-        } else {
+    private SharedPreferences getEncryptedSharedPreferences() throws GeneralSecurityException, IOException {
+        try {
+            final SharedPreferences encryptedPreferences = initializeEncryptedSharedPreferencesManager(applicationContext);
+            migrateToEncryptedPreferences(encryptedPreferences);
             return encryptedPreferences;
+        } catch (Exception e) {
+            Log.w(TAG, "EncryptedSharedPreferences initialization failed, resetting storage", e);
+            applicationContext.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE).edit().clear().apply();
+            try {
+                return initializeEncryptedSharedPreferencesManager(applicationContext);
+            } catch (Exception f) {
+                Log.e(TAG, "EncryptedSharedPreferences initialization after reset failed", e);
+                throw f;
+            }
         }
-        return null;
     }
 
     private SharedPreferences initializeEncryptedSharedPreferencesManager(Context context) throws GeneralSecurityException, IOException {

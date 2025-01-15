@@ -1,10 +1,8 @@
 package com.it_nomads.fluttersecurestorage;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -22,15 +20,16 @@ import io.flutter.plugin.common.MethodChannel.Result;
 
 public class FlutterSecureStoragePlugin implements MethodCallHandler, FlutterPlugin {
 
-    private static final String TAG = "FlutterSecureStoragePl";
     private MethodChannel channel;
     private FlutterSecureStorage secureStorage;
     private HandlerThread workerThread;
     private Handler workerThreadHandler;
+    private FlutterPluginBinding binding;
 
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
-        initInstance(binding.getBinaryMessenger(), binding.getApplicationContext());
+        this.binding = binding;
+        initInstance(binding.getBinaryMessenger());
     }
 
     @Override
@@ -46,16 +45,30 @@ public class FlutterSecureStoragePlugin implements MethodCallHandler, FlutterPlu
         secureStorage = null;
     }
 
-    private void initInstance(BinaryMessenger messenger, Context context) {
+    private void initInstance(BinaryMessenger messenger) {
+        workerThread = new HandlerThread("fluttersecurestorage.worker");
+        workerThread.start();
+        workerThreadHandler = new Handler(workerThread.getLooper());
+        channel = new MethodChannel(messenger, "plugins.it_nomads.com/flutter_secure_storage");
+        channel.setMethodCallHandler(this);
+        initSecureStorage(null);
+    }
+
+    private boolean initSecureStorage(Result result) {
+        if (secureStorage != null) return true;
+
         try {
-            secureStorage = new FlutterSecureStorage(context, new HashMap<>());
-            workerThread = new HandlerThread("fluttersecurestorage.worker");
-            workerThread.start();
-            workerThreadHandler = new Handler(workerThread.getLooper());
-            channel = new MethodChannel(messenger, "plugins.it_nomads.com/flutter_secure_storage");
-            channel.setMethodCallHandler(this);
+            secureStorage = new FlutterSecureStorage(binding.getApplicationContext(), new HashMap<>());
+            return true;
         } catch (Exception e) {
-            Log.e(TAG, "Plugin initialization failed", e);
+            if (result != null) {
+                result.error(
+                        "RESET_FAILED",  // Error code
+                        "Failed to reset and initialize encrypted preferences", // Error message
+                        e.toString()     // Details (stack trace or additional info)
+                );
+            }
+            return false;
         }
     }
 
@@ -86,6 +99,9 @@ public class FlutterSecureStoragePlugin implements MethodCallHandler, FlutterPlu
         private void handleMethodCall(MethodCall call, Result result) {
             String method = call.method;
             Map<String, Object> args = extractArguments(call);
+
+            boolean isInitialized = initSecureStorage(result);
+            if (!isInitialized) return;
 
             switch (method) {
                 case "write":
