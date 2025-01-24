@@ -156,7 +156,7 @@ public class FlutterSecureStorage {
             }
 
             if (succesfull > 0) {
-                Log.i(TAG, "Succesfully migrated " + succesfull + " keys.");
+                Log.i(TAG, "Successfully migrated " + succesfull + " keys.");
             }
             if (failed > 0) {
                 Log.i(TAG, "Failed to migrate " + failed + " keys.");
