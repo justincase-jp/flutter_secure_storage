@@ -7,6 +7,8 @@ import android.security.keystore.KeyProperties;
 import android.util.Base64;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.it_nomads.fluttersecurestorage.ciphers.StorageCipher;
 import com.it_nomads.fluttersecurestorage.ciphers.StorageCipherFactory;
 import com.it_nomads.fluttersecurestorage.crypto.EncryptedSharedPreferences;
@@ -25,13 +27,14 @@ public class FlutterSecureStorage {
     private static final Charset CHARSET = StandardCharsets.UTF_8;
     private static final String DEFAULT_PREF_NAME = "FlutterSecureStorage";
     private static final String DEFAULT_KEY_PREFIX = "VGhpcyBpcyB0aGUgcHJlZml4IGZvciBhIHNlY3VyZSBzdG9yYWdlCg";
-
+    @NonNull
     private final Context applicationContext;
+    @NonNull
+    private final SharedPreferences encryptedPreferences;
     private final Map<String, Object> options;
-
     private String sharedPreferencesName = DEFAULT_PREF_NAME;
     private String preferencesKeyPrefix = DEFAULT_KEY_PREFIX;
-    private final SharedPreferences encryptedPreferences;
+
 
     public FlutterSecureStorage(Context context, Map<String, Object> options) throws GeneralSecurityException, IOException {
         this.applicationContext = context.getApplicationContext();
@@ -41,42 +44,34 @@ public class FlutterSecureStorage {
     }
 
     public boolean containsKey(String key) {
-        return encryptedPreferences != null && encryptedPreferences.contains(addPrefixToKey(key));
+        return encryptedPreferences.contains(addPrefixToKey(key));
     }
 
     public String read(String key) {
-        return encryptedPreferences != null ? encryptedPreferences.getString(addPrefixToKey(key), null) : null;
+        return encryptedPreferences.getString(addPrefixToKey(key), null);
     }
 
     public void write(String key, String value) {
-        if (encryptedPreferences != null) {
-            encryptedPreferences.edit().putString(addPrefixToKey(key), value).apply();
-        }
+        encryptedPreferences.edit().putString(addPrefixToKey(key), value).apply();
     }
 
     public void delete(String key) {
-        if (encryptedPreferences != null) {
-            encryptedPreferences.edit().remove(addPrefixToKey(key)).apply();
-        }
+        encryptedPreferences.edit().remove(addPrefixToKey(key)).apply();
     }
 
     public void deleteAll() {
-        if (encryptedPreferences != null) {
-            encryptedPreferences.edit().clear().apply();
-        }
+        encryptedPreferences.edit().clear().apply();
     }
 
     public Map<String, String> readAll() {
         Map<String, String> result = new HashMap<>();
-        if (encryptedPreferences != null) {
-            Map<String, ?> allEntries = encryptedPreferences.getAll();
-            for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-                if (key.startsWith(preferencesKeyPrefix) && value instanceof String) {
-                    String originalKey = key.replaceFirst(preferencesKeyPrefix + "_", "");
-                    result.put(originalKey, (String) value);
-                }
+        Map<String, ?> allEntries = encryptedPreferences.getAll();
+        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (key.startsWith(preferencesKeyPrefix) && value instanceof String) {
+                String originalKey = key.replaceFirst(preferencesKeyPrefix + "_", "");
+                result.put(originalKey, (String) value);
             }
         }
         return result;
