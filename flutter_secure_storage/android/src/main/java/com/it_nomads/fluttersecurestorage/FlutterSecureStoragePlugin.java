@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -29,7 +28,11 @@ public class FlutterSecureStoragePlugin implements MethodCallHandler, FlutterPlu
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
         this.binding = binding;
-        initInstance(binding.getBinaryMessenger());
+        workerThread = new HandlerThread("fluttersecurestorage.worker");
+        workerThread.start();
+        workerThreadHandler = new Handler(workerThread.getLooper());
+        channel = new MethodChannel(binding.getBinaryMessenger(), "plugins.it_nomads.com/flutter_secure_storage");
+        channel.setMethodCallHandler(this);
     }
 
     @Override
@@ -45,20 +48,11 @@ public class FlutterSecureStoragePlugin implements MethodCallHandler, FlutterPlu
         secureStorage = null;
     }
 
-    private void initInstance(BinaryMessenger messenger) {
-        workerThread = new HandlerThread("fluttersecurestorage.worker");
-        workerThread.start();
-        workerThreadHandler = new Handler(workerThread.getLooper());
-        channel = new MethodChannel(messenger, "plugins.it_nomads.com/flutter_secure_storage");
-        channel.setMethodCallHandler(this);
-        initSecureStorage(null);
-    }
-
-    private boolean initSecureStorage(Result result) {
+    private boolean initSecureStorage(Result result, Map<String, Object> options) {
         if (secureStorage != null) return true;
 
         try {
-            secureStorage = new FlutterSecureStorage(binding.getApplicationContext(), new HashMap<>());
+            secureStorage = new FlutterSecureStorage(binding.getApplicationContext(), options);
             return true;
         } catch (Exception e) {
             if (result != null) {
@@ -98,26 +92,33 @@ public class FlutterSecureStoragePlugin implements MethodCallHandler, FlutterPlu
 
         private void handleMethodCall(MethodCall call, Result result) {
             String method = call.method;
-            Map<String, Object> args = extractArguments(call);
+            Map<String, Object> arguments = call.arguments();
 
-            boolean isInitialized = initSecureStorage(result);
+            if (arguments == null) {
+                result.error("InvalidArgument", "No arguments passed to method call", null);
+                return;
+            }
+
+            Map<String, Object> options = extractMapFromObject(arguments.get("options"));
+
+            boolean isInitialized = initSecureStorage(result, options);
             if (!isInitialized) return;
 
             switch (method) {
                 case "write":
-                    handleWrite(args, result);
+                    handleWrite(arguments, result);
                     break;
                 case "read":
-                    handleRead(args, result);
+                    handleRead(arguments, result);
                     break;
                 case "readAll":
                     handleReadAll(result);
                     break;
                 case "containsKey":
-                    handleContainsKey(args, result);
+                    handleContainsKey(arguments, result);
                     break;
                 case "delete":
-                    handleDelete(args, result);
+                    handleDelete(arguments, result);
                     break;
                 case "deleteAll":
                     handleDeleteAll(result);
@@ -140,11 +141,7 @@ public class FlutterSecureStoragePlugin implements MethodCallHandler, FlutterPlu
 
         private void handleRead(Map<String, Object> args, Result result) {
             String key = (String) args.get("key");
-            if (secureStorage.containsKey(key)) {
-                result.success(secureStorage.read(key));
-            } else {
-                result.success(null);
-            }
+            result.success(secureStorage.read(key));
         }
 
         private void handleReadAll(Result result) {
@@ -168,8 +165,11 @@ public class FlutterSecureStoragePlugin implements MethodCallHandler, FlutterPlu
         }
 
         @SuppressWarnings("unchecked")
-        private Map<String, Object> extractArguments(MethodCall call) {
-            return (Map<String, Object>) call.arguments;
+        private Map<String, Object> extractMapFromObject(Object object) {
+            if (!(object instanceof Map)) {
+                return new HashMap<>();
+            }
+            return (Map<String, Object>) object;
         }
 
         private void handleException(Exception e) {

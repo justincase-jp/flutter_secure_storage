@@ -23,24 +23,45 @@ import java.util.Map;
 
 public class FlutterSecureStorage {
 
-    private static final String TAG = "SecureStorageAndroid";
+    private static final String TAG = "FlutterSecureStorage";
     private static final Charset CHARSET = StandardCharsets.UTF_8;
     private static final String DEFAULT_PREF_NAME = "FlutterSecureStorage";
     private static final String DEFAULT_KEY_PREFIX = "VGhpcyBpcyB0aGUgcHJlZml4IGZvciBhIHNlY3VyZSBzdG9yYWdlCg";
-    @NonNull
-    private final Context applicationContext;
+    private static final String PREF_OPTION_NAME = "sharedPreferencesName";
+    private static final String PREF_OPTION_PREFIX = "preferencesKeyPrefix";
+    private static final String PREF_OPTION_DELETE_ON_FAILURE = "resetOnError";
+    private static final String PREF_KEY_MIGRATED = "preferencesMigrated";
     @NonNull
     private final SharedPreferences encryptedPreferences;
-    private final Map<String, Object> options;
-    private String sharedPreferencesName = DEFAULT_PREF_NAME;
+    @NonNull
     private String preferencesKeyPrefix = DEFAULT_KEY_PREFIX;
 
-
     public FlutterSecureStorage(Context context, Map<String, Object> options) throws GeneralSecurityException, IOException {
-        this.applicationContext = context.getApplicationContext();
-        this.options = options;
-        ensureOptions();
-        encryptedPreferences = getEncryptedSharedPreferences();
+        String sharedPreferencesName = DEFAULT_PREF_NAME;
+        if (options.containsKey(PREF_OPTION_NAME)) {
+            var value = options.get(PREF_OPTION_NAME);
+            if (value instanceof String && !((String) value).isEmpty()) {
+                sharedPreferencesName = (String) value;
+            }
+        }
+
+        if (options.containsKey(PREF_OPTION_PREFIX)) {
+            var value = options.get(PREF_OPTION_PREFIX);
+            if (value instanceof String && !((String) value).isEmpty()) {
+                preferencesKeyPrefix = (String) value;
+            }
+        }
+
+        boolean deleteOnFailure = false;
+
+        if (options.containsKey(PREF_OPTION_DELETE_ON_FAILURE)) {
+            var value = options.get(PREF_OPTION_DELETE_ON_FAILURE);
+            if (value instanceof String) {
+                deleteOnFailure = Boolean.parseBoolean((String) value);
+            }
+        }
+
+        encryptedPreferences = getEncryptedSharedPreferences(deleteOnFailure, options, context.getApplicationContext(), sharedPreferencesName);
     }
 
     public boolean containsKey(String key) {
@@ -81,34 +102,34 @@ public class FlutterSecureStorage {
         return preferencesKeyPrefix + "_" + key;
     }
 
-    private void ensureOptions() {
-        sharedPreferencesName = options.containsKey("sharedPreferencesName") && options.get("sharedPreferencesName") instanceof String
-                ? (String) options.get("sharedPreferencesName")
-                : DEFAULT_PREF_NAME;
-
-        preferencesKeyPrefix = options.containsKey("preferencesKeyPrefix") && options.get("preferencesKeyPrefix") instanceof String
-                ? (String) options.get("preferencesKeyPrefix")
-                : DEFAULT_KEY_PREFIX;
-    }
-
-    private SharedPreferences getEncryptedSharedPreferences() throws GeneralSecurityException, IOException {
+    private SharedPreferences getEncryptedSharedPreferences(boolean deleteOnFailure, Map<String, Object> options, Context context, String sharedPreferencesName) throws GeneralSecurityException, IOException {
         try {
-            final SharedPreferences encryptedPreferences = initializeEncryptedSharedPreferencesManager(applicationContext);
-            migrateToEncryptedPreferences(encryptedPreferences);
+            final SharedPreferences encryptedPreferences = initializeEncryptedSharedPreferencesManager(context, sharedPreferencesName);
+            boolean migrated = encryptedPreferences.getBoolean(PREF_KEY_MIGRATED, false);
+            if (!migrated) {
+                migrateToEncryptedPreferences(context, sharedPreferencesName, encryptedPreferences, deleteOnFailure, options);
+            }
             return encryptedPreferences;
-        } catch (Exception e) {
-            Log.w(TAG, "EncryptedSharedPreferences initialization failed, resetting storage", e);
-            applicationContext.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE).edit().clear().apply();
+        } catch (GeneralSecurityException | IOException e) {
+
+            if (!deleteOnFailure) {
+                Log.w(TAG, "initialization failed, resetOnError false, so throwing exception.", e);
+                throw e;
+            }
+            Log.w(TAG, "initialization failed, resetting storage", e);
+
+            context.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE).edit().clear().apply();
+
             try {
-                return initializeEncryptedSharedPreferencesManager(applicationContext);
+                return initializeEncryptedSharedPreferencesManager(context, sharedPreferencesName);
             } catch (Exception f) {
-                Log.e(TAG, "EncryptedSharedPreferences initialization after reset failed", e);
+                Log.e(TAG, "initialization after reset failed", f);
                 throw f;
             }
         }
     }
 
-    private SharedPreferences initializeEncryptedSharedPreferencesManager(Context context) throws GeneralSecurityException, IOException {
+    private SharedPreferences initializeEncryptedSharedPreferencesManager(Context context, String sharedPreferencesName) throws GeneralSecurityException, IOException {
         MasterKey masterKey = new MasterKey.Builder(context)
                 .setKeyGenParameterSpec(new KeyGenParameterSpec.Builder(
                         MasterKey.DEFAULT_MASTER_KEY_ALIAS,
@@ -128,17 +149,18 @@ public class FlutterSecureStorage {
         );
     }
 
-    private void migrateToEncryptedPreferences(SharedPreferences target) {
-        SharedPreferences source = applicationContext.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE);
+    private void migrateToEncryptedPreferences(Context context, String sharedPreferencesName, SharedPreferences target, boolean deleteOnFailure, Map<String, Object> options) {
+        SharedPreferences source = context.getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE);
+
+        Map<String, ?> sourceEntries = source.getAll();
+        if (sourceEntries.isEmpty()) return;
+
+        int succesfull = 0;
+        int failed = 0;
 
         try {
-            StorageCipher cipher = new StorageCipherFactory(source, options).getSavedStorageCipher(applicationContext);
+            StorageCipher cipher = new StorageCipherFactory(source, options).getSavedStorageCipher(context);
 
-            Map<String, ?> sourceEntries = source.getAll();
-            if (sourceEntries.isEmpty()) return;
-
-            int succesfull = 0;
-            int failed = 0;
             for (Map.Entry<String, ?> entry : sourceEntries.entrySet()) {
                 String key = entry.getKey();
                 Object value = entry.getValue();
@@ -151,6 +173,10 @@ public class FlutterSecureStorage {
                     } catch (Exception e) {
                         Log.e(TAG, "Migration failed for key: " + key, e);
                         failed++;
+
+                        if (deleteOnFailure) {
+                            source.edit().remove(key).apply();
+                        }
                     }
                 }
             }
@@ -158,11 +184,23 @@ public class FlutterSecureStorage {
             if (succesfull > 0) {
                 Log.i(TAG, "Successfully migrated " + succesfull + " keys.");
             }
+
             if (failed > 0) {
-                Log.i(TAG, "Failed to migrate " + failed + " keys.");
+                Log.w(TAG, "Failed to migrate " + failed + " keys.");
             }
+
+            if (failed == 0 || deleteOnFailure) {
+                target.edit().putBoolean(PREF_KEY_MIGRATED, true).apply();
+            }
+
         } catch(Exception e) {
             Log.e(TAG, "Migration failed due to initialisation error.", e);
+
+            // If a failure has occurred during StorageCipher initialization, set migrated to true
+            // so migration is not run again
+            if (deleteOnFailure) {
+                target.edit().putBoolean(PREF_KEY_MIGRATED, true).apply();
+            }
         }
     }
 
