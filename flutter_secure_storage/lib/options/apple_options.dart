@@ -30,8 +30,9 @@ enum KeychainAccessibility {
   first_unlock_this_device,
 }
 
-/// Keychain access control flags that define security conditions for accessing items.
-/// These flags can be combined to create complex access control policies.
+/// Keychain access control flags that define security conditions for accessing
+/// items. These flags can be combined to create complex access control
+/// policies.
 enum AccessControlFlag {
   /// Constraint to access an item with a passcode.
   devicePasscode,
@@ -161,12 +162,14 @@ abstract class AppleOptions extends Options {
   /// Determines whether authentication prompts are displayed to the user.
   final String? authenticationUIBehavior;
 
-  /// Keychain access control flags define security conditions for accessing items.
-  /// These flags can be combined to create custom security policies.
+  /// Keychain access control flags define security conditions for accessing
+  /// items. These flags can be combined to create custom security policies.
   ///
   /// ### Using Logical Operators:
-  /// - Use `AccessControlFlag.or` to allow access if **any** of the specified conditions are met.
-  /// - Use `AccessControlFlag.and` to require that **all** specified conditions are met.
+  /// - Use `AccessControlFlag.or` to allow access if **any** of the specified
+  ///   conditions are met.
+  /// - Use `AccessControlFlag.and` to require that **all** specified conditions
+  ///   are met.
   ///
   /// **Rules for Combining Flags:**
   /// - Only one logical operator (`or` or `and`) can be used per combination.
