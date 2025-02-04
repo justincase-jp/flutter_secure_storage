@@ -1,4 +1,4 @@
-name: 🤖📱 Code Integration
+name: 🤖📱 Code Integration Tests
 
 on:
   push:
@@ -15,7 +15,7 @@ defaults:
 jobs:
   # Android Integration Tests
   integration_tests_android:
-    name: 🤖 Android Integration Tests
+    name: 🤖 Android
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -43,7 +43,7 @@ jobs:
 
   # iOS Integration Tests
   integration_tests_ios:
-    name: 🍏 iOS Integration Tests
+    name: 🍏 iOS
     runs-on: macos-latest
     timeout-minutes: 30
     steps:

@@ -10,7 +10,7 @@ env:
 
 jobs:
   test_with_coverage:
-    name: 🧪 Run Flutter Unit Tests with Coverage
+    name: 🧪 Unit Tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
