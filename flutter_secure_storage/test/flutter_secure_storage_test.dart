@@ -185,8 +185,7 @@ void main() {
 
     test(
         'AndroidOptions handles null sharedPreferencesName and '
-            'preferencesKeyPrefix',
-        () {
+        'preferencesKeyPrefix', () {
       const options = AndroidOptions.defaultOptions;
 
       expect(options.toMap()['sharedPreferencesName'], '');
@@ -336,7 +335,7 @@ void main() {
         resultLimit: 10,
         shouldReturnPersistentReference: true,
         authenticationUIBehavior: 'require_auth',
-        accessControlSettings: 'biometric_only',
+        accessControlFlags: [AccessControlFlag.biometryCurrentSet],
       );
 
       expect(options.toMap(), {
@@ -354,7 +353,8 @@ void main() {
         'resultLimit': '10',
         'shouldReturnPersistentReference': 'true',
         'authenticationUIBehavior': 'require_auth',
-        'accessControlSettings': 'biometric_only',
+        'accessControlFlags':
+            [AccessControlFlag.biometryCurrentSet.name].toString(),
       });
     });
 
