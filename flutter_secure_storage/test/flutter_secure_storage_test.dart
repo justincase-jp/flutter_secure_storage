@@ -16,7 +16,7 @@ void main() {
   setUp(() {
     mockPlatform = MockFlutterSecureStoragePlatform();
     FlutterSecureStoragePlatform.instance = mockPlatform;
-    storage = FlutterSecureStorage();
+    storage = const FlutterSecureStorage();
   });
 
   group('FlutterSecureStorage Tests', () {

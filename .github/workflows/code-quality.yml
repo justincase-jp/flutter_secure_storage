@@ -1,0 +1,63 @@
+name: 📝 Code Quality
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  PUB_ENVIRONMENT: bot.github
+
+jobs:
+  analysis_and_formatting:
+    name: 📝 Code Analysis & Formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      # Set up Flutter
+      - name: ⚡ Set Up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true  # Enable Flutter SDK caching
+
+      # Verify Flutter version
+      - name: 🔍 Flutter Version Info
+        run: flutter doctor -v
+
+      # Cache Pub dependencies
+      - name: 📦 Cache Pub Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+            .dart_tool
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      # Install Melos
+      - name: 🚀 Install Melos
+        run: |
+          flutter pub global activate melos
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+      # Bootstrap workspace
+      - name: 🔧 Bootstrap Workspace with Melos
+        run: melos bootstrap
+
+      # Run Linter
+      - name: ✅ Lint Code
+        run: melos analyze
+
+      # Check Code Formatting
+      - name: 🎯 Check Code Formatting
+        run: melos format --output none --set-exit-if-changed
