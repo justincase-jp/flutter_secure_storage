@@ -270,7 +270,10 @@ class HomePageState extends State<HomePage> {
             child: const Text('OK'),
           ),
         ],
-        content: TextField(controller: controller),
+        content: TextField(
+          controller: controller,
+          key: const Key('key_field'),
+        ),
       ),
     );
     return controller.text;

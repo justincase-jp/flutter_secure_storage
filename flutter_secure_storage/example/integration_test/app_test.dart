@@ -139,7 +139,7 @@ class HomePageObject {
     final keyWidget = tester.widget<Text>(keyFinder);
 
     // Enter key in the dialog
-    final textField = find.byType(TextField);
+    final textField = find.byKey(const Key('key_field'));
     expect(textField, findsOneWidget);
     await tester.enterText(textField, keyWidget.data!);
     await tester.pumpAndSettle();
@@ -165,7 +165,7 @@ class HomePageObject {
     final keyWidget = tester.widget<Text>(keyFinder);
 
     // Enter key in the dialog
-    final textField = find.byType(TextField);
+    final textField = find.byKey(const Key('key_field'));
     expect(textField, findsOneWidget);
     await tester.enterText(textField, keyWidget.data!);
     await tester.pumpAndSettle();
