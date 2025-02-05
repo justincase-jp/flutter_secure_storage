@@ -1,10 +1,17 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_secure_storage/test/test_flutter_secure_storage_platform.dart';
 import 'package:flutter_secure_storage_platform_interface/flutter_secure_storage_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'flutter_secure_storage_mock.dart';
+class MockFlutterSecureStoragePlatform extends Mock
+    with MockPlatformInterfaceMixin
+    implements FlutterSecureStoragePlatform {}
+
+class ImplementsFlutterSecureStoragePlatform extends Mock
+    implements FlutterSecureStoragePlatform {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -159,7 +166,7 @@ void main() {
 
     test('Can be extended', () {
       FlutterSecureStoragePlatform.instance =
-          ExtendsFlutterSecureStoragePlatform();
+          TestFlutterSecureStoragePlatform({});
     });
   });
 
