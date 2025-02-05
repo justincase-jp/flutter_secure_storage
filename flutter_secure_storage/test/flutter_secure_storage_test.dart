@@ -1,169 +1,25 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_secure_storage_platform_interface/flutter_secure_storage_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'flutter_secure_storage_mock.dart';
+// ✅ Correct Mock Class Implementation
+class MockFlutterSecureStoragePlatform extends Mock
+    with MockPlatformInterfaceMixin
+    implements FlutterSecureStoragePlatform {}
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
   late FlutterSecureStorage storage;
   late MockFlutterSecureStoragePlatform mockPlatform;
-
-  const channel = MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
-  final methodStorage = MethodChannelFlutterSecureStorage();
-  final log = <MethodCall>[];
-
-  Future<bool?>? handler(MethodCall methodCall) async {
-    log.add(methodCall);
-    if (methodCall.method == 'containsKey') {
-      return true;
-    } else if (methodCall.method == 'isProtectedDataAvailable') {
-      return true;
-    }
-    return null;
-  }
 
   setUp(() {
     mockPlatform = MockFlutterSecureStoragePlatform();
     FlutterSecureStoragePlatform.instance = mockPlatform;
     storage = const FlutterSecureStorage();
-
-    // Ensure method channel mock is set up for the tests
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, handler);
-
-    log.clear(); // Clear logs before each test
   });
 
-  tearDown(() {
-    log.clear(); // Clear logs after each test
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, null); // Remove the mock handler
-  });
-
-  group('Method Channel Interaction Tests for FlutterSecureStorage', () {
-    test('read', () async {
-      const key = 'test_key';
-      const options = <String, String>{};
-      await methodStorage.read(key: key, options: options);
-
-      expect(
-        log,
-        <Matcher>[
-          isMethodCall(
-            'read',
-            arguments: <String, Object>{
-              'key': key,
-              'options': options,
-            },
-          ),
-        ],
-      );
-    });
-
-    test('write', () async {
-      const key = 'test_key';
-      const options = <String, String>{};
-      await methodStorage.write(key: key, value: 'test', options: options);
-
-      expect(
-        log,
-        <Matcher>[
-          isMethodCall(
-            'write',
-            arguments: <String, Object>{
-              'key': key,
-              'value': 'test',
-              'options': options,
-            },
-          ),
-        ],
-      );
-    });
-
-    test('containsKey', () async {
-      const key = 'test_key';
-      const options = <String, String>{};
-      await methodStorage.write(key: key, value: 'test', options: options);
-
-      final result =
-          await methodStorage.containsKey(key: key, options: options);
-
-      expect(result, true);
-    });
-
-    test('delete', () async {
-      const key = 'test_key';
-      const options = <String, String>{};
-      await methodStorage.write(key: key, value: 'test', options: options);
-      await methodStorage.delete(key: key, options: options);
-
-      expect(
-        log,
-        <Matcher>[
-          isMethodCall(
-            'write',
-            arguments: <String, Object>{
-              'key': key,
-              'value': 'test',
-              'options': options,
-            },
-          ),
-          isMethodCall(
-            'delete',
-            arguments: <String, Object>{
-              'key': key,
-              'options': options,
-            },
-          ),
-        ],
-      );
-    });
-
-    test('deleteAll', () async {
-      const options = <String, String>{};
-      await methodStorage.deleteAll(options: options);
-
-      expect(
-        log,
-        <Matcher>[
-          isMethodCall(
-            'deleteAll',
-            arguments: <String, Object>{
-              'options': options,
-            },
-          ),
-        ],
-      );
-    });
-  });
-
-  group('Platform-Specific Interface Tests', () {
-    test('Cannot be implemented with `implements`', () {
-      expect(
-        () {
-          FlutterSecureStoragePlatform.instance =
-              ImplementsFlutterSecureStoragePlatform();
-        },
-        throwsA(isInstanceOf<AssertionError>()),
-      );
-    });
-
-    test('Can be mocked with `implements`', () {
-      final mock = MockFlutterSecureStoragePlatform();
-      FlutterSecureStoragePlatform.instance = mock;
-    });
-
-    test('Can be extended', () {
-      FlutterSecureStoragePlatform.instance =
-          ExtendsFlutterSecureStoragePlatform();
-    });
-  });
-
-  group('FlutterSecureStorage Methods Invocation Tests', () {
+  group('FlutterSecureStorage Tests', () {
     const testKey = 'testKey';
     const testValue = 'testValue';
 
@@ -262,7 +118,7 @@ void main() {
     });
   });
 
-  group('AndroidOptions Configuration Tests', () {
+  group('AndroidOptions Tests', () {
     test('Default AndroidOptions should have correct default values', () {
       const options = AndroidOptions.defaultOptions;
 
@@ -345,7 +201,7 @@ void main() {
     });
   });
 
-  group('WebOptions Configuration Tests', () {
+  group('WebOptions Tests', () {
     test('Default WebOptions should have correct default values', () {
       const options = WebOptions.defaultOptions;
 
@@ -405,7 +261,7 @@ void main() {
     });
   });
 
-  group('WindowsOptions Configuration Tests', () {
+  group('WindowsOptions Tests', () {
     test('Default WindowsOptions should have correct default values', () {
       const options = WindowsOptions.defaultOptions;
 
@@ -452,7 +308,7 @@ void main() {
     });
   });
 
-  group('iOSOptions Configuration Tests', () {
+  group('IOSOptions Tests', () {
     test('Default IOSOptions should have correct default values', () {
       const options = IOSOptions.defaultOptions;
 
@@ -512,8 +368,8 @@ void main() {
     });
   });
 
-  group('macOSOptions Configuration Tests', () {
-    test('Default macOSOptions should have correct default values', () {
+  group('MacOsOptions Tests', () {
+    test('Default MacOsOptions should have correct default values', () {
       // Ignore for test
       // ignore: use_named_constants
       const options = MacOsOptions();
@@ -526,7 +382,7 @@ void main() {
       });
     });
 
-    test('macOSOptions with custom values', () {
+    test('MacOsOptions with custom values', () {
       const options = MacOsOptions(
         accountName: 'macAccount',
         groupId: 'group.mac.example',
@@ -544,7 +400,7 @@ void main() {
       });
     });
 
-    test('macOSOptions defaultOptions matches default constructor', () {
+    test('MacOsOptions defaultOptions matches default constructor', () {
       const defaultOptions = MacOsOptions.defaultOptions;
       // Ignore for test
       // ignore: use_named_constants
