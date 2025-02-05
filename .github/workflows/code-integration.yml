@@ -90,5 +90,8 @@ jobs:
           os: iOS
           os_version: ">=18.1"
           model: "iPhone 15"
+      - run: flutter pub get
+      - run: flutter build ios --simulator --target=integration_test/app_test.dart
+        working-directory: flutter_secure_storage/example
       - run: flutter test integration_test
         working-directory: flutter_secure_storage/example
