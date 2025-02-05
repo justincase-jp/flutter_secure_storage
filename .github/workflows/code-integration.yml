@@ -19,8 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [ 35 ]
-        target: [ default, google_apis ]
+        api-level: [ 23, 35 ]
+        target: [ default ]
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
