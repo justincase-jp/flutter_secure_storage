@@ -1,10 +1,18 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_secure_storage/test/test_flutter_secure_storage_platform.dart';
 import 'package:flutter_secure_storage_platform_interface/flutter_secure_storage_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'flutter_secure_storage_mock.dart';
+class MockFlutterSecureStoragePlatform extends Mock
+    with MockPlatformInterfaceMixin
+    implements FlutterSecureStoragePlatform {}
+
+class ImplementsFlutterSecureStoragePlatform extends Mock
+    implements FlutterSecureStoragePlatform {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +36,7 @@ void main() {
 
   setUp(() {
     mockPlatform = MockFlutterSecureStoragePlatform();
+
     FlutterSecureStoragePlatform.instance = mockPlatform;
     storage = const FlutterSecureStorage();
 
@@ -159,7 +168,7 @@ void main() {
 
     test('Can be extended', () {
       FlutterSecureStoragePlatform.instance =
-          ExtendsFlutterSecureStoragePlatform();
+          TestFlutterSecureStoragePlatform({});
     });
   });
 
@@ -224,6 +233,38 @@ void main() {
       ).called(1);
     });
 
+    test('deleteAll should call platform delete all method', () async {
+      when(
+        () => mockPlatform.deleteAll(
+          options: any(named: 'options'),
+        ),
+      ).thenAnswer((_) async {});
+
+      await storage.deleteAll();
+
+      verify(
+        () => mockPlatform.deleteAll(
+          options: any(named: 'options'),
+        ),
+      ).called(1);
+    });
+
+    test('readAll should call platform read all method', () async {
+      when(
+        () => mockPlatform.readAll(
+          options: any(named: 'options'),
+        ),
+      ).thenAnswer((_) async => {testKey: testValue});
+
+      await storage.readAll();
+
+      verify(
+        () => mockPlatform.readAll(
+          options: any(named: 'options'),
+        ),
+      ).called(1);
+    });
+
     test('containsKey should return true if key exists', () async {
       when(
         () => mockPlatform.containsKey(
@@ -259,6 +300,62 @@ void main() {
           options: any(named: 'options'),
         ),
       ).called(1);
+    });
+  });
+
+  group('Test FlutterSecureStorage Methods', () {
+    late TestFlutterSecureStoragePlatform storagePlatform;
+    final initialData = <String, String>{'key1': 'value1', 'key2': 'value2'};
+
+    setUp(() {
+      storagePlatform = TestFlutterSecureStoragePlatform(Map.from(initialData));
+    });
+
+    test('reads a value', () async {
+      expect(await storagePlatform.read(key: 'key1', options: {}), 'value1');
+    });
+
+    test('returns null for non-existent key', () async {
+      expect(await storagePlatform.read(key: 'key3', options: {}), isNull);
+    });
+
+    test('writes a value', () async {
+      await storagePlatform.write(key: 'key3', value: 'value3', options: {});
+      expect(storagePlatform.data['key3'], 'value3');
+    });
+
+    test('containsKey returns true for existing key', () async {
+      expect(
+        await storagePlatform.containsKey(key: 'key1', options: {}),
+        isTrue,
+      );
+    });
+
+    test('containsKey returns false for non-existing key', () async {
+      expect(
+        await storagePlatform.containsKey(key: 'key3', options: {}),
+        isFalse,
+      );
+    });
+
+    test('deletes a value', () async {
+      await storagePlatform.delete(key: 'key1', options: {});
+      expect(storagePlatform.data.containsKey('key1'), isFalse);
+    });
+
+    test('deleteAll clears all data', () async {
+      await storagePlatform.deleteAll(options: {});
+      expect(storagePlatform.data.isEmpty, isTrue);
+    });
+
+    test('readAll returns all key-value pairs', () async {
+      final allData = await storagePlatform.readAll(options: {});
+      expect(allData, equals(initialData));
+    });
+
+    test('modifying data does not affect initial data map', () async {
+      await storagePlatform.write(key: 'key1', value: 'newvalue1', options: {});
+      expect(initialData['key1'], 'value1');
     });
   });
 
@@ -551,6 +648,55 @@ void main() {
       const constructorOptions = MacOsOptions();
 
       expect(defaultOptions.toMap(), constructorOptions.toMap());
+    });
+  });
+
+  group('Listener Management Tests', () {
+    late ValueChanged<String?> listener1;
+    late ValueChanged<String?> listener2;
+
+    setUp(() {
+      storage.unregisterAllListeners();
+      listener1 = (value) => debugPrint('Listener 1: $value');
+      listener2 = (value) => debugPrint('Listener 2: $value');
+    });
+
+    test('Register listener adds correctly', () {
+      storage.registerListener(key: 'key1', listener: listener1);
+      expect(storage.getListeners['key1']?.contains(listener1), isTrue);
+    });
+
+    test('Register multiple listeners on same key', () {
+      storage
+        ..registerListener(key: 'key1', listener: listener1)
+        ..registerListener(key: 'key1', listener: listener2);
+      expect(storage.getListeners['key1']?.length, 2);
+      expect(storage.getListeners['key1'], containsAll([listener1, listener2]));
+    });
+
+    test('Unregister listener removes specific listener', () {
+      storage
+        ..registerListener(key: 'key1', listener: listener1)
+        ..registerListener(key: 'key1', listener: listener2)
+        ..unregisterListener(key: 'key1', listener: listener1);
+      expect(storage.getListeners['key1']?.contains(listener1), isFalse);
+      expect(storage.getListeners['key1']?.contains(listener2), isTrue);
+    });
+
+    test('Unregister all listeners for a key', () {
+      storage
+        ..registerListener(key: 'key1', listener: listener1)
+        ..registerListener(key: 'key1', listener: listener2)
+        ..unregisterAllListenersForKey(key: 'key1');
+      expect(storage.getListeners.containsKey('key1'), isFalse);
+    });
+
+    test('Unregister all listeners for all keys', () {
+      storage
+        ..registerListener(key: 'key1', listener: listener1)
+        ..registerListener(key: 'key2', listener: listener2)
+        ..unregisterAllListeners();
+      expect(storage.getListeners.isEmpty, isTrue);
     });
   });
 }
