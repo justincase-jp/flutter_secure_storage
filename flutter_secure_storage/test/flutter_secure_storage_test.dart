@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_secure_storage/test/test_flutter_secure_storage_platform.dart';
@@ -558,6 +559,55 @@ void main() {
       const constructorOptions = MacOsOptions();
 
       expect(defaultOptions.toMap(), constructorOptions.toMap());
+    });
+  });
+
+  group('Listener Management Tests', () {
+    late ValueChanged<String?> listener1;
+    late ValueChanged<String?> listener2;
+
+    setUp(() {
+      storage.unregisterAllListeners();
+      listener1 = (value) => debugPrint('Listener 1: $value');
+      listener2 = (value) => debugPrint('Listener 2: $value');
+    });
+
+    test('Register listener adds correctly', () {
+      storage.registerListener(key: 'key1', listener: listener1);
+      expect(storage.getListeners['key1']?.contains(listener1), isTrue);
+    });
+
+    test('Register multiple listeners on same key', () {
+      storage
+        ..registerListener(key: 'key1', listener: listener1)
+        ..registerListener(key: 'key1', listener: listener2);
+      expect(storage.getListeners['key1']?.length, 2);
+      expect(storage.getListeners['key1'], containsAll([listener1, listener2]));
+    });
+
+    test('Unregister listener removes specific listener', () {
+      storage
+        ..registerListener(key: 'key1', listener: listener1)
+        ..registerListener(key: 'key1', listener: listener2)
+        ..unregisterListener(key: 'key1', listener: listener1);
+      expect(storage.getListeners['key1']?.contains(listener1), isFalse);
+      expect(storage.getListeners['key1']?.contains(listener2), isTrue);
+    });
+
+    test('Unregister all listeners for a key', () {
+      storage
+        ..registerListener(key: 'key1', listener: listener1)
+        ..registerListener(key: 'key1', listener: listener2)
+        ..unregisterAllListenersForKey(key: 'key1');
+      expect(storage.getListeners.containsKey('key1'), isFalse);
+    });
+
+    test('Unregister all listeners for all keys', () {
+      storage
+        ..registerListener(key: 'key1', listener: listener1)
+        ..registerListener(key: 'key2', listener: listener2)
+        ..unregisterAllListeners();
+      expect(storage.getListeners.isEmpty, isTrue);
     });
   });
 }
