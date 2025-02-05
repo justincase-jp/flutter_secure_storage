@@ -36,6 +36,7 @@ void main() {
 
   setUp(() {
     mockPlatform = MockFlutterSecureStoragePlatform();
+
     FlutterSecureStoragePlatform.instance = mockPlatform;
     storage = const FlutterSecureStorage();
 
@@ -232,6 +233,38 @@ void main() {
       ).called(1);
     });
 
+    test('deleteAll should call platform delete all method', () async {
+      when(
+        () => mockPlatform.deleteAll(
+          options: any(named: 'options'),
+        ),
+      ).thenAnswer((_) async {});
+
+      await storage.deleteAll();
+
+      verify(
+        () => mockPlatform.deleteAll(
+          options: any(named: 'options'),
+        ),
+      ).called(1);
+    });
+
+    test('readAll should call platform read all method', () async {
+      when(
+        () => mockPlatform.readAll(
+          options: any(named: 'options'),
+        ),
+      ).thenAnswer((_) async => {testKey: testValue});
+
+      await storage.readAll();
+
+      verify(
+        () => mockPlatform.readAll(
+          options: any(named: 'options'),
+        ),
+      ).called(1);
+    });
+
     test('containsKey should return true if key exists', () async {
       when(
         () => mockPlatform.containsKey(
@@ -267,6 +300,62 @@ void main() {
           options: any(named: 'options'),
         ),
       ).called(1);
+    });
+  });
+
+  group('Test FlutterSecureStorage Methods', () {
+    late TestFlutterSecureStoragePlatform storagePlatform;
+    final initialData = <String, String>{'key1': 'value1', 'key2': 'value2'};
+
+    setUp(() {
+      storagePlatform = TestFlutterSecureStoragePlatform(Map.from(initialData));
+    });
+
+    test('reads a value', () async {
+      expect(await storagePlatform.read(key: 'key1', options: {}), 'value1');
+    });
+
+    test('returns null for non-existent key', () async {
+      expect(await storagePlatform.read(key: 'key3', options: {}), isNull);
+    });
+
+    test('writes a value', () async {
+      await storagePlatform.write(key: 'key3', value: 'value3', options: {});
+      expect(storagePlatform.data['key3'], 'value3');
+    });
+
+    test('containsKey returns true for existing key', () async {
+      expect(
+        await storagePlatform.containsKey(key: 'key1', options: {}),
+        isTrue,
+      );
+    });
+
+    test('containsKey returns false for non-existing key', () async {
+      expect(
+        await storagePlatform.containsKey(key: 'key3', options: {}),
+        isFalse,
+      );
+    });
+
+    test('deletes a value', () async {
+      await storagePlatform.delete(key: 'key1', options: {});
+      expect(storagePlatform.data.containsKey('key1'), isFalse);
+    });
+
+    test('deleteAll clears all data', () async {
+      await storagePlatform.deleteAll(options: {});
+      expect(storagePlatform.data.isEmpty, isTrue);
+    });
+
+    test('readAll returns all key-value pairs', () async {
+      final allData = await storagePlatform.readAll(options: {});
+      expect(allData, equals(initialData));
+    });
+
+    test('modifying data does not affect initial data map', () async {
+      await storagePlatform.write(key: 'key1', value: 'newvalue1', options: {});
+      expect(initialData['key1'], 'value1');
     });
   });
 
