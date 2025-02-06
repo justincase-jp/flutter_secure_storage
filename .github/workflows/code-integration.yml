@@ -91,6 +91,7 @@ jobs:
           os_version: ">=18.1"
           model: "iPhone 15"
       - run: flutter pub get
+        working-directory: flutter_secure_storage/example
       - name: Pod Install
         working-directory: flutter_secure_storage/example
         run: |
